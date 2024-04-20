@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping("/appointment")
 @Tag(name = "Appointment Controller", description = "Endpoints for managing appointments")
 public class AppointmentController {
+
     @Autowired
     public IAppointmentsService appointmentsService;
 
@@ -124,13 +126,29 @@ public class AppointmentController {
     })
     @GetMapping("/getAppD/{status}/{specialistID}")
     public ResponseEntity<Page<AppointmentDTO>> getAllAppointmentsForDoctor(
-            @PathVariable @Parameter(description = "status", required = true) String status,
             @PathVariable @Parameter(description = "specialist ID", required = true) Integer specialistID,
             @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
             @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size) {
 
         Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
         return ResponseEntity.ok(appointments);
+
+
+    }
+
+    @GetMapping
+    public String getAppointmentsList(
+            @RequestParam @Parameter(description = "specialist ID", required = true) Integer specialistID,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size,
+            Model model) {
+
+
+        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
+        model.addAttribute("appointment", appointments);
+
+
+        return "appointment";
     }
 
 }
