@@ -116,4 +116,21 @@ public class AppointmentController {
     public ResponseEntity<List<Appointment>> getAppointments(){
         return ResponseEntity.ok(appointmentsService.getAppointments());
     }
+
+    @Operation(summary = "Get All Appointments For Doctor", responses = {
+            @ApiResponse(responseCode = "200", description = "Appointments retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Users not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/getAppD/{status}/{specialistID}")
+    public ResponseEntity<Page<AppointmentDTO>> getAllAppointmentsForDoctor(
+            @PathVariable @Parameter(description = "status", required = true) String status,
+            @PathVariable @Parameter(description = "specialist ID", required = true) Integer specialistID,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size) {
+
+        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
+        return ResponseEntity.ok(appointments);
+    }
+
 }

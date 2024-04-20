@@ -48,4 +48,8 @@ public interface AppointmentsRepo extends JpaRepository<Appointment,Integer> {
     Appointment getAppointmentById(Integer id);
 
     Page<AppointmentDTO> getAppointmentsForDoctorByAppointmentStatus(String status, Integer specialistID, Pageable pageable);
+
+    Page<AppointmentDTO> findAllBySpecialistSpecialistId(Integer doctorId, Pageable pageable);
+
+
 }

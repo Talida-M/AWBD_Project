@@ -92,9 +92,17 @@ public class AppointmentsService implements  IAppointmentsService{
     @Transactional
     @Override
     public Page<AppointmentDTO> getAppointmentsForDoctorByAppointmentStatus(String status, Integer specialistID, int page, int size) {
-        Sort sortByAppointmentDate = Sort.by("appointmentStatus").ascending();
+        Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
         Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
         return appointmentsRepo.getAppointmentsForDoctorByAppointmentStatus(status, specialistID, pageable);
+    }
+
+    @Transactional
+    @Override
+    public Page<AppointmentDTO> getAllDoctorAppointmentsForDoctorSortedByDate(int doctorId, int page, int size) {
+        Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
+        Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
+        return appointmentsRepo.findAllBySpecialistSpecialistId( doctorId, pageable);
     }
 
 }
