@@ -4,6 +4,9 @@ package com.example.demo.repositories;
 import com.example.demo.dtos.AppointmentDTO;
 import com.example.demo.entity.Appointment;
 import io.swagger.models.auth.In;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -44,4 +47,5 @@ public interface AppointmentsRepo extends JpaRepository<Appointment,Integer> {
             " order by app.appointmentDate DESC ")
     Appointment getAppointmentById(Integer id);
 
+    Page<AppointmentDTO> getAppointmentsForDoctorByAppointmentStatus(String status, Integer specialistID, Pageable pageable);
 }

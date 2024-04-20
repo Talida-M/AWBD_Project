@@ -35,7 +35,6 @@ public class Appointment {
     private PaymentDetail paymentDetail;
 
 
-
     public Appointment(Integer appointmentId,  Pacient pacient, Specialist specialist, String appointmentType, LocalDateTime appointmentDate, String appointmentStatus) {
         AppointmentId = appointmentId;
 
