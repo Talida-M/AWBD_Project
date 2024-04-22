@@ -1,6 +1,7 @@
 package com.example.demo.services.SpecialistService;
 
 
+import com.example.demo.dtos.AppointmentDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.entity.Specialist;
@@ -17,5 +18,7 @@ public interface ISpecialistService {
 
     List<SpecialistDTO> getSpecialistByName(String fname, String lname);
     void delete(Integer id);
+    List<SpecialistDTO> findAll();
+
 
 }

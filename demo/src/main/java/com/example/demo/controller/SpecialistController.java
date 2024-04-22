@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -83,6 +84,16 @@ public class SpecialistController {
             @PathVariable @Parameter(description = "User ID", required = true) Integer id){
         specialistService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping("/form")
+    public String specialistForm(Model model) {
+        Specialist specialist = new Specialist();
+        specialist.setUser(null);
+        model.addAttribute("specialist",  specialist);
+        List<SpecialistDTO> specialistAll = specialistService.findAll();
+        model.addAttribute("specialistAll", specialistAll );
+        return "specialistForm";
     }
 
 

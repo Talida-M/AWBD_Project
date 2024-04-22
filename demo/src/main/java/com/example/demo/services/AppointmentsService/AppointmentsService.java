@@ -9,6 +9,7 @@ import com.example.demo.entity.StatusAppointment;
 import com.example.demo.repositories.AppointmentsRepo;
 import com.example.demo.repositories.PacientsRepo;
 import com.example.demo.repositories.SpecialistRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,11 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class AppointmentsService implements  IAppointmentsService{
-
+    ModelMapper modelMapper;
     @Autowired
     PacientsRepo pacientsRepo;
     @Autowired
@@ -30,10 +32,11 @@ public class AppointmentsService implements  IAppointmentsService{
     @Autowired
     SpecialistRepo specialistRepo;
 
-    public AppointmentsService(SpecialistRepo specialistRepo, AppointmentsRepo appointmentsRepo, PacientsRepo pacientsRepo) {
+    public AppointmentsService(SpecialistRepo specialistRepo, AppointmentsRepo appointmentsRepo, PacientsRepo pacientsRepo,ModelMapper modelMapper) {
         this.specialistRepo = specialistRepo;
         this.appointmentsRepo = appointmentsRepo;
         this.pacientsRepo     = pacientsRepo;
+        this.modelMapper = modelMapper;
     }
     @Transactional
     @Override
@@ -103,6 +106,15 @@ public class AppointmentsService implements  IAppointmentsService{
         Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
         Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
         return appointmentsRepo.findAllBySpecialistSpecialistId( doctorId, pageable);
+    }
+
+    @Override
+    public AppointmentDTO findById(Integer l) {
+        Optional<Appointment> productOptional = appointmentsRepo.findById(l);
+        if (!productOptional.isPresent()) {
+            throw new RuntimeException("Product not found!");
+        }
+        return modelMapper.map(productOptional.get(), AppointmentDTO.class);
     }
 
 }

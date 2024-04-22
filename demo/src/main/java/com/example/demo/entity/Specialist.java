@@ -55,7 +55,7 @@ public class Specialist {
         this.appointments = appointments;
     }
 
-    public Specialist(Integer specialistId, String specialty, String description, Double price, String appointmentTime, User user) {
+    public Specialist(Integer specialistId, String description, Double price, String appointmentTime, User user) {
         this.specialistId = specialistId;
         this.description = description;
         this.price = price;
@@ -89,6 +89,13 @@ public class Specialist {
 
     public void setUser(User user) {
         this.user = user;
+    }
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
     }
 
     public List<DoctorReview> getDoctorReviews() {

@@ -14,12 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("appointment")
 @Tag(name = "Appointment Controller", description = "Endpoints for managing appointments")
 public class AppointmentController {
 
@@ -136,19 +137,35 @@ public class AppointmentController {
 
     }
 
-    @GetMapping
-    public String getAppointmentsList(
-            @RequestParam @Parameter(description = "specialist ID", required = true) Integer specialistID,
-            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
-            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size,
-            Model model) {
+  //  @RequestMapping
+//    @GetMapping({"/appointment"})
+//    public ModelAndView getAppointmentsList(
+//            @RequestParam @Parameter(description = "specialist ID", required = true) Integer specialistID,
+//            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+//            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size,
+//            Model model) {
+//
+//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
+//        model.addAttribute("appointment", appointments);
+//
+//        return new ModelAndView("appointmentList.html");
+//
+//    }
 
-
-        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
-        model.addAttribute("appointment", appointments);
-
-
-        return "appointment";
+    @RequestMapping("")
+    public ModelAndView getAppointmentsList(Model model) {
+        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate('1',1,1);
+        model.addAttribute("appointments",appointments);
+        return new ModelAndView("appointmentList.html");
     }
+
+    @RequestMapping("/form")
+    public ModelAndView edit( Model model) {
+        model.addAttribute("appointment",
+                appointmentsService.findById(1));
+
+        return new ModelAndView("appointmentForm");
+    }
+
 
 }

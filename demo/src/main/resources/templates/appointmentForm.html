@@ -43,10 +43,54 @@
         </div>
     </nav>
 
-    <div class="text-center mt-3">
-        <h1 style="color: blue;">Mental Health App</h1>
-        <img src="/doctors.jpeg" alt="Mental Health App Logo" width="500">
-    </div>
 </div>
+<form enctype="multipart/form-data" method="post" th:action="@{/appointment}" th:object="${appointment}">
+    <input th:field="*{appointmentType}" type="hidden"/>
+    <input th:field="*{pacientId}" type="hidden"/>
+    <input th:field="*{appointmentDate}" type="hidden"/>
+    <input th:field="*{appointmentStatus}" type="hidden"/>
+
+
+
+    <div class="container" style="margin-top: 50px">
+        <div class="panel panel-default">
+            <div  class="panel-heading">
+                <h3> </h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="form-group row">
+                    <div class="col-md-5 ">
+                        <div class="form-row">
+                            <input class="form-control" th:field="*{appointmentType}" type="text" placeholder="Type"/>
+                        </div>
+                        <br>
+                        <div class="form-row">
+                            <input class="form-control" th:field="*{pacientId}" type="number" placeholder="pacientId"/>
+                        </div>
+                        <br>
+                        <div class="form-row">
+                            <input class="form-control" th:field="*{appointmentDate}" type="text" placeholder="Date"/>
+                        </div>
+                        <br>
+                        <div class="form-row">
+                            <input class="form-control" th:field="*{appointmentStatus}" type="text" placeholder="Status"/>
+                        </div>
+                        <br>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-1 ml-md-auto">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
 </body>
 </html>
