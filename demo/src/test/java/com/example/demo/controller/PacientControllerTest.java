@@ -6,11 +6,15 @@ import com.example.demo.services.PacientService.IPacientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PacientController.class)
+@ActiveProfiles("h2")
+@AutoConfigureTestDatabase
+@SpringJUnitWebConfig
 public class PacientControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -28,6 +35,7 @@ public class PacientControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private IPacientService pacientService;
+    private static final Logger log = LoggerFactory.getLogger(PacientControllerTest.class);
 
     @Test
     public void createPacient() throws Exception {
@@ -38,6 +46,8 @@ public class PacientControllerTest {
                 .content(objectMapper.writeValueAsString(newPacient)))
                 .andExpect(status().isOk());
         verify(pacientService).registerPacient(any(RegisterPacientDTO.class));
+        log.info("createPacient test executed successfully");
+
     }
 
 
@@ -53,6 +63,8 @@ public class PacientControllerTest {
                 .andExpect(jsonPath("$", hasSize(pacientList.size())));
 
         verify(pacientService).getPacients();
+        log.info("getPacients test executed successfully");
+
     }
 
     @Test
@@ -65,6 +77,8 @@ public class PacientControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(pacientService).delete(pacientId);
+        log.info("deletePacient test executed successfully");
+
     }
 
 

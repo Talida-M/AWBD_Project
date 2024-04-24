@@ -56,7 +56,7 @@ public class SpecialistService implements ISpecialistService{
             newspecialist.setAppointmentTime(user.getAppointmentTime());
             newspecialist.setDescription(user.getDescription());
             newspecialist.setPrice(user.getPrice());
-            newspecialist.setString(user.getString());
+            newspecialist.setString(user.getSpecialty());
             specialistRepo.save(newspecialist);
 
             List<Location> locations = new ArrayList<>();

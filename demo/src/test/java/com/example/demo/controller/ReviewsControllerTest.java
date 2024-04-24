@@ -13,8 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.verify;
@@ -33,7 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewsController.class)
+@ActiveProfiles("h2")
+@AutoConfigureTestDatabase
+@SpringJUnitWebConfig
 public class ReviewsControllerTest {
+    private static final Logger log = Logger.getLogger(ReviewsControllerTest.class.getName());
 
         @Autowired
         private MockMvc mockMvc;
@@ -55,7 +63,7 @@ public class ReviewsControllerTest {
                             .content(objectMapper.writeValueAsString(reviewDTO)))
                     .andExpect(status().isOk());
 
-
+            log.info("createReview test executed successfully.");
         }
 
         @Test
@@ -72,6 +80,8 @@ public class ReviewsControllerTest {
                     .andExpect(jsonPath("$", hasSize(reviewDTO.size())));
             ;
             verify(reviewService).getDoctorReview(specialistId);
+            log.info("getDoctorReviews test executed successfully.");
+
         }
 
         @Test
@@ -83,6 +93,8 @@ public class ReviewsControllerTest {
                             .content(String.valueOf(Long.parseLong(objectMapper.writeValueAsString(id)))))
                     .andExpect(status().isNoContent());
             verify(reviewService).delete(id);
+            log.info("deleteReview test executed successfully.");
+
         }
 
         @Test
@@ -106,6 +118,8 @@ public class ReviewsControllerTest {
                     .andExpect(jsonPath("$", hasSize(reviewDTO.size())));
 
             verify(reviewService).getDoctorReviews();
+            log.info("getAllReviews test executed successfully.");
+
         }
     }
 

@@ -47,6 +47,19 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pacient pacient;
+
+    @ManyToOne(targetEntity = Authority.class)
+    @PrimaryKeyJoinColumn(name = "authority_id")
+    private Authority authority;
+
+    public Authority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -123,6 +136,31 @@ public class User {
         this.address = address;
         this.password = password;
         this.role = role;
+    }
+
+    public User( String firstName, String lastName, String email,  String password, String role) {
+        //this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+//        this.authority = authority;
+    }
+
+    public User(Integer id, String firstName, String lastName, String email, String phoneNumber, String address, boolean isDeleted, String password, String role, Specialist specialist, Pacient pacient, Authority authority) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.isDeleted = isDeleted;
+        this.password = password;
+        this.role = role;
+        this.specialist = specialist;
+        this.pacient = pacient;
+        this.authority = authority;
     }
 
     @Override

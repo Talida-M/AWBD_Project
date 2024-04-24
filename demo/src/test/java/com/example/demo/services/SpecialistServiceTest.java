@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.dtos.NewLocationDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.entity.Specialist;
@@ -16,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,8 +41,10 @@ public class SpecialistServiceTest {
 
     @Test
     void whenEmailNotUsed_registerDoctor_savesSpecialist() {
-        // Arrange
-        RegisterSpecialistDTO dto = new RegisterSpecialistDTO("John", "Doe", "johndoe@example.com", "1234567890", "123 Street", "password", "Specialty", "Description", 100.0, "9AM-5PM");
+        List<NewLocationDTO> locations = new ArrayList<>();
+        locations.add(new NewLocationDTO(1L, "Location 1", "Address 1"));
+        locations.add(new NewLocationDTO(2L, "Location 2", "Address 2"));
+        RegisterSpecialistDTO dto = new RegisterSpecialistDTO("John", "Doe", "johndoe@example.com", "1234567890", "123 Street", "password", "Specialty", "Description", 100.0, "9AM-5PM", locations);
         when(userRepo.getUserByEmail(dto.getEmail())).thenReturn(Optional.empty());
 
         // Act
