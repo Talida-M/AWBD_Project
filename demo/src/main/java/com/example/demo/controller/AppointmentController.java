@@ -10,9 +10,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
 @RequestMapping("/appointment")
 @Tag(name = "Appointment Controller", description = "Endpoints for managing appointments")
 public class AppointmentController {
+
     @Autowired
     public IAppointmentsService appointmentsService;
 
@@ -60,10 +64,14 @@ public class AppointmentController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/getAppPD/{status}/{specialistID}")
-    public ResponseEntity<List<AppointmentDTO>> getAppointmentsForDoctorByStatus(
-            @PathVariable @Parameter(description = "status ", required = true) String status,
-            @PathVariable @Parameter(description = "specialist ID", required = true) Integer specialistID){
-        return ResponseEntity.ok(appointmentsService.getAppointmentsForDoctorByStatus(status, specialistID));
+    public ResponseEntity<Page<AppointmentDTO>> getAppointmentsForDoctorByStatus(
+            @PathVariable @Parameter(description = "status", required = true) String status,
+            @PathVariable @Parameter(description = "specialist ID", required = true) Integer specialistID,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size) {
+
+        Page<AppointmentDTO> appointments = appointmentsService.getAppointmentsForDoctorByAppointmentStatus(status, specialistID, page, size);
+        return ResponseEntity.ok(appointments);
     }
 
     @Operation(summary = "Get Appointments For Pacients By Status", responses = {
@@ -113,4 +121,58 @@ public class AppointmentController {
     public ResponseEntity<List<Appointment>> getAppointments(){
         return ResponseEntity.ok(appointmentsService.getAppointments());
     }
+
+    @Operation(summary = "Get All Appointments For Doctor", responses = {
+            @ApiResponse(responseCode = "200", description = "Appointments retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Users not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/getAppD/{status}/{specialistID}")
+    public ResponseEntity<Page<AppointmentDTO>> getAllAppointmentsForDoctor(
+            @PathVariable @Parameter(description = "specialist ID", required = true) Integer specialistID,
+            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size) {
+
+        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
+        return ResponseEntity.ok(appointments);
+
+
+    }
+
+  //  @RequestMapping
+//    @GetMapping({"/appointment"})
+//    public ModelAndView getAppointmentsList(
+//            @RequestParam @Parameter(description = "specialist ID", required = true) Integer specialistID,
+//            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
+//            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size,
+//            Model model) {
+//
+//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
+//        model.addAttribute("appointment", appointments);
+//
+//        return new ModelAndView("appointmentList.html");
+//
+//    }
+
+//    @RequestMapping("")
+//    public ModelAndView getAppointmentsList(Model model) {
+//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate('1',1,1);
+//        model.addAttribute("appointments",appointments);
+//        return new ModelAndView("appointmentList.html");
+//    }
+    @RequestMapping("")
+    public ModelAndView getAppointments(Model model){
+        List<Appointment> appointments = appointmentsService.getAppointments();
+        model.addAttribute("appointments",appointments);
+        return new ModelAndView ("appointmentList");
+    }
+
+    @RequestMapping("/form")
+    public ModelAndView add(Model model){
+        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
+        return new ModelAndView("appointmentForm");
+    }
+
+
+
 }

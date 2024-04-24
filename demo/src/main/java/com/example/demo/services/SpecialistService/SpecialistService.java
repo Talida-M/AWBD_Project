@@ -11,17 +11,19 @@ import com.example.demo.repositories.LocationRepo;
 import com.example.demo.repositories.SpecialistRepo;
 import com.example.demo.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.modelmapper.ModelMapper;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SpecialistService implements ISpecialistService{
+    ModelMapper modelMapper;
+
     @Autowired
     LocationRepo locationRepo;
     @Autowired
@@ -29,10 +31,12 @@ public class SpecialistService implements ISpecialistService{
     @Autowired
       UserRepo userRepo;
 
-    public SpecialistService(SpecialistRepo specialistRepo, UserRepo userRepo, LocationRepo locationRepo) {
+
+    public SpecialistService(SpecialistRepo specialistRepo, UserRepo userRepo, LocationRepo locationRepo,ModelMapper modelMapper) {
         this.specialistRepo = specialistRepo;
         this.userRepo = userRepo;
         this.locationRepo = locationRepo;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
@@ -102,6 +106,18 @@ public class SpecialistService implements ISpecialistService{
     @Override
     public List<SpecialistDTO> getSpecialistByName (String fname, String lname) {
         return specialistRepo.getSpecialistsByname(fname, lname);
+    }
+
+    @Override
+    public List<SpecialistDTO> findAll(){
+
+        List<Specialist> specialists = new LinkedList<>();
+        specialistRepo.findAll(Sort.by("firstName")
+        ).iterator().forEachRemaining(specialists::add);
+
+        return specialists.stream()
+                .map(specialist -> modelMapper.map(specialist, SpecialistDTO.class))
+                .collect(Collectors.toList());
     }
 
 }
