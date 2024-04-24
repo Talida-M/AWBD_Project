@@ -18,7 +18,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto topnav">
+            <ul class="navbar-nav ml-auto topnav" id="loggedInNav">
+                <!-- Navbar items to show when logged in -->
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{'/appointment'}">Appointments</a>
                 </li>
@@ -30,15 +31,15 @@
                         <i class="fas fa-plus-circle"></i> Add Appointment
                     </a>
                 </li>
-
             </ul>
-            <ul class="navbar-nav ms-auto topnav">
+
+            <ul class="navbar-nav ms-auto topnav" id="loginNav">
+                <!-- Navbar items to show when not logged in -->
                 <li class="nav-item">
                     <a class="nav-link btn-primary" th:href="@{'/login'}">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </a>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -46,7 +47,25 @@
     <div class="text-center mt-3">
         <h1 style="color: blue;">Mental Health App</h1>
         <img src="/doctors.jpeg" alt="Mental Health App Logo" width="500">
+        <h2 id="message"></h2>
     </div>
 </div>
+
+<script>
+
+    $(document).ready(function() {
+        var token = localStorage.getItem('token');
+        if (token) {
+            $('#message').text('Welcome doctor !');
+            $('#loggedInNav').show();
+            $('#loginNav').hide();
+        } else {
+            $('#message').text('Please log in !');
+            $('#loggedInNav').hide();
+            $('#loginNav').show();
+        }
+    });
+</script>
+
 </body>
 </html>

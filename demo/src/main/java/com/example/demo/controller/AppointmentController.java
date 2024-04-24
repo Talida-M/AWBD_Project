@@ -152,20 +152,25 @@ public class AppointmentController {
 //
 //    }
 
+//    @RequestMapping("")
+//    public ModelAndView getAppointmentsList(Model model) {
+//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate('1',1,1);
+//        model.addAttribute("appointments",appointments);
+//        return new ModelAndView("appointmentList.html");
+//    }
     @RequestMapping("")
-    public ModelAndView getAppointmentsList(Model model) {
-        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate('1',1,1);
+    public ModelAndView getAppointments(Model model){
+        List<Appointment> appointments = appointmentsService.getAppointments();
         model.addAttribute("appointments",appointments);
-        return new ModelAndView("appointmentList.html");
+        return new ModelAndView ("appointmentList");
     }
 
     @RequestMapping("/form")
-    public ModelAndView edit( Model model) {
-        model.addAttribute("appointment",
-                appointmentsService.findById(1));
-
+    public ModelAndView add(Model model){
+        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
         return new ModelAndView("appointmentForm");
     }
+
 
 
 }

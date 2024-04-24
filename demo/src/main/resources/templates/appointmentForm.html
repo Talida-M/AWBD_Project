@@ -32,21 +32,16 @@
                 </li>
 
             </ul>
-            <ul class="navbar-nav ms-auto topnav">
-                <li class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/login'}">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </a>
-                </li>
 
-            </ul>
         </div>
     </nav>
 
 </div>
+
 <form enctype="multipart/form-data" method="post" th:action="@{/appointment}" th:object="${appointment}">
+
     <input th:field="*{appointmentType}" type="hidden"/>
-    <input th:field="*{pacientId}" type="hidden"/>
+    <input th:field="*{pacient.pacientId}" type="hidden"/>
     <input th:field="*{appointmentDate}" type="hidden"/>
     <input th:field="*{appointmentStatus}" type="hidden"/>
 
@@ -66,11 +61,11 @@
                         </div>
                         <br>
                         <div class="form-row">
-                            <input class="form-control" th:field="*{pacientId}" type="number" placeholder="pacientId"/>
+                            <input class="form-control" th:field="*{pacient.pacientId}" type="number" placeholder="pacientId"/>
                         </div>
                         <br>
                         <div class="form-row">
-                            <input class="form-control" th:field="*{appointmentDate}" type="text" placeholder="Date"/>
+                            <input class="form-control" th:field="*{appointmentDate}" type="datetime-local" placeholder="Date"/>
                         </div>
                         <br>
                         <div class="form-row">

@@ -48,6 +48,8 @@ public class Appointment {
     public Appointment() {
     }
 
+
+
     public Integer getAppointmentId() {
         return AppointmentId;
     }
