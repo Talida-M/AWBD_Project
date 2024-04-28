@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/appointment")
+@RequestMapping("appointment")
 @Tag(name = "Appointment Controller", description = "Endpoints for managing appointments")
 public class AppointmentController {
 
@@ -164,6 +164,7 @@ public class AppointmentController {
     public ModelAndView getAppointments(Model model){
         List<Appointment> appointments = appointmentsService.getAppointments();
         model.addAttribute("appointments",appointments);
+        System.out.println("appointments" + appointments);
         return new ModelAndView ("appointmentList");
     }
 

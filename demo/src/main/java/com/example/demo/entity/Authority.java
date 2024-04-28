@@ -20,6 +20,10 @@ public class Authority {
         this.authority = authority;
     }
 
+    public Authority(String authority) {
+        this.authority = authority;
+    }
+
     public int getId() {
         return id;
     }

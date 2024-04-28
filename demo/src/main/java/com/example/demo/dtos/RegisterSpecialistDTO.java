@@ -5,6 +5,7 @@ import com.example.demo.entity.Location;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -61,4 +62,7 @@ public class RegisterSpecialistDTO {
     }
 
 
+    public RegisterSpecialistDTO() {
+        this.locations = new ArrayList<>();
+    }
 }

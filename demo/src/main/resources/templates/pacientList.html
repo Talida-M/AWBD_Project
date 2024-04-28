@@ -48,13 +48,13 @@
             <th></th>
         </tr>
         </thead>
-        <tr th:each="specialist, stat : ${specialists}"
+        <tr th:each="pacient, stat : ${pacients}"
             th:class="${stat.odd}? 'table-light':''">
-            <td th:text="${appointment.pacientId}">1</td>
-            <td th:text="${appointment.socialCategory}"> Online</td>
-            <td th:text="${appointment.username}">114</td>
-            <td th:text="${appointment.user.firstName}">123</td>
-            <td th:text="${appointment.user.lastName}">01.02.2024</td>
+            <td th:text="${pacient.id}">1</td>
+            <td th:text="${pacient.socialCategory}"> Online</td>
+            <td th:text="${pacient.username}">114</td>
+            <td th:text="${pacient.firstName}">123</td>
+            <td th:text="${pacient.lastName}">01.02.2024</td>
 
         </tr>
 

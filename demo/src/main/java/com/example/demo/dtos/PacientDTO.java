@@ -115,6 +115,22 @@ public class PacientDTO {
         public void setHasInsurance(boolean hasInsurance) {
             this.hasInsurance = hasInsurance;
         }
+
+    @Override
+    public String toString() {
+        return "PacientDTO{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", address='" + address + '\'' +
+                ", password='" + password + '\'' +
+                ", socialCategory='" + socialCategory + '\'' +
+                ", username='" + username + '\'' +
+                ", hasInsurance=" + hasInsurance +
+                '}';
     }
+}
 
 

@@ -16,4 +16,12 @@ public class NewLocationDTO {
         this.name = name;
         this.address = address;
     }
+
+    public NewLocationDTO( String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public NewLocationDTO() {
+    }
 }

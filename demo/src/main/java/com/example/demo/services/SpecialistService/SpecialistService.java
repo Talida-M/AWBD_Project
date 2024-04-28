@@ -3,6 +3,7 @@ package com.example.demo.services.SpecialistService;
 import com.example.demo.dtos.NewLocationDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
+import com.example.demo.entity.Authority;
 import com.example.demo.entity.Location;
 import com.example.demo.entity.Specialist;
 import com.example.demo.entity.User;
@@ -10,8 +11,10 @@ import com.example.demo.exception.RegisterException;
 import com.example.demo.repositories.LocationRepo;
 import com.example.demo.repositories.SpecialistRepo;
 import com.example.demo.repositories.UserRepo;
+import com.example.demo.services.AuthorityService.IAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
@@ -30,13 +33,17 @@ public class SpecialistService implements ISpecialistService{
       SpecialistRepo specialistRepo;
     @Autowired
       UserRepo userRepo;
+    private PasswordEncoder passwordEncoder;
 
+    private IAuthorityService authorityService;
 
-    public SpecialistService(SpecialistRepo specialistRepo, UserRepo userRepo, LocationRepo locationRepo,ModelMapper modelMapper) {
+    public SpecialistService(SpecialistRepo specialistRepo, UserRepo userRepo, LocationRepo locationRepo,ModelMapper modelMapper, IAuthorityService authorityService, PasswordEncoder passwordEncoder) {
         this.specialistRepo = specialistRepo;
         this.userRepo = userRepo;
         this.locationRepo = locationRepo;
         this.modelMapper = modelMapper;
+        this.authorityService = authorityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -51,8 +58,10 @@ public class SpecialistService implements ISpecialistService{
             newUser.setAddress(user.getAddress());
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getFirstName());
-            newUser.setPassword(user.getPassword());
+            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
             newUser.setRole("Specialist");
+            Authority authority = authorityService.getAuthorityByName("ROLE_DOCTOR");
+            newUser.setAuthority(authority);
             userRepo.save(newUser);
 
             Specialist newspecialist = new Specialist();

@@ -3,12 +3,15 @@ package com.example.demo.services.PacientService;
 import com.example.demo.dtos.DoctorPacientsDTO;
 import com.example.demo.dtos.PacientDTO;
 import com.example.demo.dtos.RegisterPacientDTO;
+import com.example.demo.entity.Authority;
 import com.example.demo.entity.Pacient;
 import com.example.demo.entity.User;
 import com.example.demo.exception.RegisterException;
 import com.example.demo.repositories.PacientsRepo;
 import com.example.demo.repositories.UserRepo;
+import com.example.demo.services.AuthorityService.IAuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +27,15 @@ public class PacientService implements IPacientService{
 
     @Autowired
     private final UserRepo userRepo;
+    private PasswordEncoder passwordEncoder;
 
+    private IAuthorityService authorityService;
 
-    public PacientService(PacientsRepo pacientsRepo, UserRepo userRepo) {
+    public PacientService(PacientsRepo pacientsRepo, UserRepo userRepo, IAuthorityService authorityService, PasswordEncoder passwordEncoder) {
         this.pacientsRepo = pacientsRepo;
         this.userRepo = userRepo;
+        this.authorityService = authorityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -43,8 +50,10 @@ public class PacientService implements IPacientService{
             newUser.setAddress(user.getAddress());
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getFirstName());
-            newUser.setPassword(user.getPassword());
+            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
             newUser.setRole("Pacient");
+            Authority authority = authorityService.getAuthorityByName("ROLE_USER");
+            newUser.setAuthority(authority);
             userRepo.save(newUser);
 
             Pacient newpacient = new Pacient();

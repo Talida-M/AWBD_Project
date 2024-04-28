@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/pacient")
+@RequestMapping("pacient")
 @Tag(name = "Pacient Controller", description = "Endpoints for managing pacients")
 public class PacientController {
     @Autowired
@@ -84,6 +84,7 @@ public class PacientController {
         List<PacientDTO> pacients = pacientService.getPacients();
 
         model.addAttribute("pacients",pacients);
+        System.out.println("pacients are " + pacients);
         return new ModelAndView("pacientList");
     }
 
