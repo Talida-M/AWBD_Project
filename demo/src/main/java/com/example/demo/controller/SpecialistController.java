@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dtos.PacientDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.entity.Specialist;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -96,6 +98,15 @@ public class SpecialistController {
         List<SpecialistDTO> specialistAll = specialistService.findAll();
         model.addAttribute("specialistAll", specialistAll );
         return "specialistForm";
+    }
+
+    @RequestMapping("")
+    public ModelAndView getSpecialistList(Model model) {
+          List<SpecialistDTO> specialists = specialistService.getDoctorsList();
+
+        model.addAttribute("specialists",specialists);
+        System.out.println("specialists are " + specialists);
+        return new ModelAndView("specialistList");
     }
 
 
