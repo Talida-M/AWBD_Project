@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Appointments List</title>
@@ -22,11 +22,11 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{'/appointment'}">Appointments</a>
                 </li>
-                <li th:if="${userRole == 'specialist'}" class="nav-item">
+                <li sec:authorize="hasAnyRole('SPECIALIST')" class="nav-item">
                     <a class="nav-link" th:href="@{'/pacient'}">Pacients</a>
                 </li>
 
-                <li th:if="${userRole == 'pacient'}" class="nav-item">
+                <li sec:authorize="hasAnyRole('PACIENT')" class="nav-item">
                     <a class="nav-link" th:href="@{'/specialist'}">Specialists</a>
                 </li>
                 <li class="nav-item">
