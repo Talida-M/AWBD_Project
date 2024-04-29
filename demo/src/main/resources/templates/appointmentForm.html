@@ -22,8 +22,12 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{'/appointment'}">Appointments</a>
                 </li>
-                <li class="nav-item">
+                <li th:if="${userRole == 'specialist'}" class="nav-item">
                     <a class="nav-link" th:href="@{'/pacient'}">Pacients</a>
+                </li>
+
+                <li th:if="${userRole == 'pacient'}" class="nav-item">
+                    <a class="nav-link" th:href="@{'/specialist'}">Specialists</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link btn-primary" th:href="@{'/appointment/form'}">
