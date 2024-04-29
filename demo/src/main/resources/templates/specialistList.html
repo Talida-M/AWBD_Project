@@ -41,7 +41,8 @@
     </nav>
 </div>
 <div class="container">
-    <table class="table table-hover ">
+    <td th:if="${specialists.size() == 0 || specialists.size() == null }">No specialist yet</td>
+    <table th:if="${specialists.size() > 0}" class="table table-hover ">
         <thead class="thead-inverse">
         <tr>
             <th>Specialist Id</th>
@@ -61,7 +62,6 @@
             <td th:text="${specialist.email}">123</td>
             <td th:text="${specialist.phoneNumber}">01.02.2024</td>
             <td th:text="${specialist.price}">01.02.2024</td>
-
         </tr>
 
     </table>
