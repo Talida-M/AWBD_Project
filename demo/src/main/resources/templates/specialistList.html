@@ -41,26 +41,27 @@
     </nav>
 </div>
 <div class="container">
-    <td th:if="${pacients.size() == 0 || pacients.size() == null }">No pacient yet</td>
-    <table th:if="${pacients.size() > 0}" class="table table-hover ">
+    <td th:if="${specialists.size() == 0 || specialists.size() == null }">No specialist yet</td>
+    <table th:if="${specialists.size() > 0}" class="table table-hover ">
         <thead class="thead-inverse">
         <tr>
-            <th>Pacient Id</th>
-            <th>Social Category</th>
-            <th>Username</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Specialist Id</th>
+            <th>First name</th>
+            <th>last name</th>
+            <th>Email</th>
+            <th>Phone number</th>
+            <th>Price</th>
             <th></th>
         </tr>
         </thead>
-        <tr th:each="pacient, stat : ${pacients}"
+        <tr th:each="specialist, stat : ${specialists}"
             th:class="${stat.odd}? 'table-light':''">
-            <td th:text="${pacient.id}">1</td>
-            <td th:text="${pacient.socialCategory}"> Online</td>
-            <td th:text="${pacient.username}">114</td>
-            <td th:text="${pacient.firstName}">123</td>
-            <td th:text="${pacient.lastName}">01.02.2024</td>
-
+            <td th:text="${specialist.id}">1</td>
+            <td th:text="${specialist.firstName}"> Online</td>
+            <td th:text="${specialist.lastName}">114</td>
+            <td th:text="${specialist.email}">123</td>
+            <td th:text="${specialist.phoneNumber}">01.02.2024</td>
+            <td th:text="${specialist.price}">01.02.2024</td>
         </tr>
 
     </table>
