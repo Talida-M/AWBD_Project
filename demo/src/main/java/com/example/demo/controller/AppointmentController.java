@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -168,11 +169,25 @@ public class AppointmentController {
         return new ModelAndView ("appointmentList");
     }
 
-    @RequestMapping("/form")
-    public ModelAndView add(Model model){
-        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
-        return new ModelAndView("appointmentForm");
+//    @PostMapping("/form")
+//    public ModelAndView add(Model model){
+//        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
+//        return new ModelAndView("appointmentForm");
+//    }
+
+    @PostMapping("/form")
+    public ModelAndView add(
+            @Valid @ModelAttribute("appointment") NewAppointmentDTO appointment,
+            BindingResult bindingResult,
+            Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("appointment",appointment);
+            return new ModelAndView("appointmentForm");
+        }
+        appointmentsService.newAppointment(appointment);
+        return new ModelAndView("redirect:/appointment");
     }
+
 
 
 

@@ -60,22 +60,28 @@
             <div class="panel-body">
                 <div class="form-group row">
                     <div class="col-md-5 ">
+
                         <div class="form-row">
-                            <input class="form-control" th:field="*{appointmentType}" type="text" placeholder="Type"/>
+                            <input id="pacientEmail" class="form-control" th:field="*{pacientEmail}" type="text" placeholder="pacientEmail"/>
+                            <label for="pacientEmail" th:if="${#fields.hasErrors('pacientEmail')}" th:errors="*{pacientEmail}" class="text-danger">Error</label>
                         </div>
                         <br>
                         <div class="form-row">
-                            <input class="form-control" th:field="*{pacient.pacientId}" type="number" placeholder="pacientId"/>
+                            <input id="specialistEmail" class="form-control" th:field="*{specialistEmail}" type="text" placeholder="specialistEmail"/>
+                            <label for="specialistEmail" th:if="${#fields.hasErrors('specialistEmail')}" th:errors="*{pacientEmail}" class="text-danger">Error</label>
                         </div>
                         <br>
                         <div class="form-row">
-                            <input class="form-control" th:field="*{appointmentDate}" type="datetime-local" placeholder="Date"/>
+                            <input id="appointmentType"  class="form-control" th:field="*{appointmentType}" type="text" placeholder="Type"/>
+                            <label for="appointmentType" th:if="${#fields.hasErrors('appointmentType')}" th:errors="*{appointmentType}" class="text-danger">Error</label>
                         </div>
                         <br>
                         <div class="form-row">
-                            <input class="form-control" th:field="*{appointmentStatus}" type="text" placeholder="Status"/>
+                            <input id="appointmentDate" class="form-control" th:field="*{appointmentDate}" type="datetime-local" placeholder="Date"/>
+                            <label for="appointmentDate" th:if="${#fields.hasErrors('appointmentDate')}" th:errors="*{appointmentDate}" class="text-danger">Error</label>
                         </div>
                         <br>
+
 
                     </div>
 
