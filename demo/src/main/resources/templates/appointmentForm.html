@@ -29,11 +29,11 @@
                 <li sec:authorize="hasAnyRole('PACIENT')" class="nav-item">
                     <a class="nav-link" th:href="@{'/specialist'}">Specialists</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/appointment/form'}">
-                        <i class="fas fa-plus-circle"></i> Add Appointment
-                    </a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link btn-primary" th:href="@{'/appointment/form'}">-->
+<!--                        <i class="fas fa-plus-circle"></i> Add Appointment-->
+<!--                    </a>-->
+<!--                </li>-->
 
             </ul>
 
@@ -42,12 +42,12 @@
 
 </div>
 
-<form enctype="multipart/form-data" method="post" th:action="@{/appointment}" th:object="${appointment}">
+<form enctype="multipart/form-data" method="post" th:action="@{/appointment/add}" th:object="${appointment}">
 
-    <input th:field="*{appointmentType}" type="hidden"/>
-    <input th:field="*{pacient.pacientId}" type="hidden"/>
-    <input th:field="*{appointmentDate}" type="hidden"/>
-    <input th:field="*{appointmentStatus}" type="hidden"/>
+<!--    <input th:field="*{appointmentType}" type="hidden"/>-->
+<!--&lt;!&ndash;    <input th:field="*{pacient.pacientId}" type="hidden"/>&ndash;&gt;-->
+<!--    <input th:field="*{appointmentDate}" type="hidden"/>-->
+<!--    <input th:field="*{appointmentStatus}" type="hidden"/>-->
 
 
 

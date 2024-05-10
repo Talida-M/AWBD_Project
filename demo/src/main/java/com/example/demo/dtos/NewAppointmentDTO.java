@@ -2,6 +2,7 @@ package com.example.demo.dtos;
 
 
 import com.example.demo.entity.AppType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,8 @@ public class NewAppointmentDTO {
     private  String pacientEmail;
   private String specialistEmail;
   private String appointmentType;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime appointmentDate;
 
     public NewAppointmentDTO(String pacientEmail, String specialistEmail, String appointmentType, LocalDateTime appointmentDate) {

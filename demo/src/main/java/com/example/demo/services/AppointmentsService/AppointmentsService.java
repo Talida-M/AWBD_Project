@@ -42,8 +42,10 @@ public class AppointmentsService implements  IAppointmentsService{
     @Transactional
     @Override
     public void  newAppointment (NewAppointmentDTO app) {
-        Pacient pacient = pacientsRepo.getPacientByEmail(app.getPacientEmail()).orElse(null);
-        Specialist specialist = specialistRepo.getDoctorByEmail(app.getSpecialistEmail()).orElse(null);
+        String emailP = app.getPacientEmail();
+        Pacient pacient = pacientsRepo.getPacientByEmail(emailP).orElse(null);
+        String emailS = app.getSpecialistEmail();
+        Specialist specialist = specialistRepo.getDoctorByEmail(emailS).orElse(null);
             Appointment newapp = new Appointment();
             newapp.setAppointmentDate(app.getAppointmentDate());
             newapp.setAppointmentType(app.getAppointmentType());

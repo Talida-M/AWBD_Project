@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .antMatchers("/appointment/appointmentList/**").hasAnyRole("SPECIALIST",  "PACIENT")
                 .antMatchers("/appointment/appointmentList/*").hasAnyRole("SPECIALIST",  "PACIENT")
                 .antMatchers("/appointment/newApp").hasAnyRole( "ADMIN", "PACIENT")
+                .antMatchers("/appointment/add").hasAnyRole( "ADMIN", "PACIENT")
+
                 .antMatchers("/appointment/status-selection").hasAnyRole( "SPECIALIST", "PACIENT")
 
                 // URLs accessible only to specialists and admin

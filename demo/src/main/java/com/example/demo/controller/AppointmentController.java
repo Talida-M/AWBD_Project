@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -195,24 +197,21 @@ public class AppointmentController {
     }
 
 
-//    @PostMapping("/form")
-//    public ModelAndView add(Model model){
-//        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
-//        return new ModelAndView("appointmentForm");
-//    }
-
-    @PostMapping("/form")
-    public ModelAndView add(
-            @Valid @ModelAttribute("appointment") NewAppointmentDTO appointment,
-            BindingResult bindingResult,
-            Model model){
-        if(bindingResult.hasErrors()){
-            model.addAttribute("appointment",appointment);
-            return new ModelAndView("appointmentForm");
-        }
-        appointmentsService.newAppointment(appointment);
-        return new ModelAndView("redirect:/appointment");
+    @RequestMapping("/form")
+    public ModelAndView showpage(Model model){
+        model.addAttribute("appointment",new NewAppointmentDTO());//mapper.requestAuthor(new RequestAuthor()));
+        return new ModelAndView("appointmentForm");
     }
+
+    @PostMapping("/add")
+    public ModelAndView add(@Valid @ModelAttribute("appointment") NewAppointmentDTO appointment) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.info("Received appointment: {}", appointment);
+
+        appointmentsService.newAppointment(appointment);
+        return new ModelAndView("redirect:/status-selection");
+    }
+
 
 
 
