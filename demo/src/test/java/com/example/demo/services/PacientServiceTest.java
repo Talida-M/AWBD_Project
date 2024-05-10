@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
+import antlr.collections.List;
+import com.example.demo.dtos.PacientDTO;
 import com.example.demo.dtos.RegisterPacientDTO;
+import com.example.demo.entity.Appointment;
 import com.example.demo.entity.Pacient;
 import com.example.demo.entity.User;
 import com.example.demo.exception.RegisterException;
@@ -12,12 +15,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PacientServiceTest {
@@ -74,4 +82,20 @@ public class PacientServiceTest {
         verify(pacientsRepo).delete(pacient);
 
 }
+
+    @Test
+    public void getPacientsList() throws Exception{
+        PacientDTO entry1 = new PacientDTO(1,"ion","daniel","email","071234567","adresa", "student", "iond",true);
+        PacientDTO entry2 = new PacientDTO(2,"mircea","dinu","email","071254567","adresa2", "student", "mircead",true);
+
+        List<PacientDTO> list = new ArrayList<>();
+        list.add(entry1);
+        list.add(entry2);
+        when(pacientService.getPacients()).thenReturn(list);
+
+        mockMvc.perform(get("/pacient"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pacientList"))
+                .andExpect(model().attribute("pacients",list));
+    }
 }

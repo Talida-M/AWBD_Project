@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -194,10 +195,23 @@ public class AppointmentController {
     }
 
 
-    @RequestMapping("/form")
-    public ModelAndView add(Model model){
-        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
-        return new ModelAndView("appointmentForm");
+//    @PostMapping("/form")
+//    public ModelAndView add(Model model){
+//        model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
+//        return new ModelAndView("appointmentForm");
+//    }
+
+    @PostMapping("/form")
+    public ModelAndView add(
+            @Valid @ModelAttribute("appointment") NewAppointmentDTO appointment,
+            BindingResult bindingResult,
+            Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("appointment",appointment);
+            return new ModelAndView("appointmentForm");
+        }
+        appointmentsService.newAppointment(appointment);
+        return new ModelAndView("redirect:/appointment");
     }
 
 
@@ -228,6 +242,7 @@ public class AppointmentController {
 
         return new ModelAndView("appointmentList" );
     }
+
 
 
 

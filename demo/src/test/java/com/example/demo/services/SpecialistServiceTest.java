@@ -1,6 +1,8 @@
 package com.example.demo.services;
 
+import antlr.collections.List;
 import com.example.demo.dtos.NewLocationDTO;
+import com.example.demo.dtos.PacientDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.entity.Specialist;
@@ -25,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 
@@ -127,5 +131,22 @@ public class SpecialistServiceTest {
         // Assert
         verify(specialistRepo).delete(specialist);
 
+    }
+
+
+    @Test
+    public void getSpecialistList() throws Exception{
+        SpecialistDTO entry1 = new SpecialistDTO(1,"ion","daniel","email","071234567","adresa", "medic", "descriere",200, "marti");
+        SpecialistDTO entry2 = new SpecialistDTO(2,"mircea","dinu","email","071254567","adresa2", "medic", "descriere",200, "marti");
+
+        List<SpecialistDTO> list = new ArrayList<>();
+        list.add(entry1);
+        list.add(entry2);
+        when(specialistService.getDoctorsList()).thenReturn(list);
+
+        mockMvc.perform(get("/specialist"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("specialistList"))
+                .andExpect(model().attribute("specialists",list));
     }
 }

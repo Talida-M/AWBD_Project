@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import antlr.collections.List;
 import com.example.demo.dtos.AppointmentDTO;
 import com.example.demo.dtos.NewAppointmentDTO;
 import com.example.demo.dtos.SpecialistDTO;
+import com.example.demo.entity.Appointment;
 import com.example.demo.services.AppointmentsService.IAppointmentsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -31,8 +36,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(controllers = AppointmentController.class)
 @ActiveProfiles("h2")
@@ -114,6 +119,23 @@ public class AppointmentControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(appointmentsService).delete(id);
+    }
+
+
+    @Test
+    public void getAppointments() throws Exception{
+        Appointment appointment = new Appointment(1,1,2,'online',new LocalDateTime(),'in asteptare');
+        Appointment appointment2 = new Appointment(2,3,2,'fizic',new LocalDateTime(),'respinsa');
+
+        List<Appointment> appointments = new ArrayList<>();
+        appointments.add(appointment);
+        appointments.add(appointment2);
+        when(appointmentsService.getAppointments()).thenReturn(appointments);
+
+        mockMvc.perform(get("/appointment"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("appointmentList"))
+                .andExpect(model().attribute("appointments",appointments));
     }
 
 }
