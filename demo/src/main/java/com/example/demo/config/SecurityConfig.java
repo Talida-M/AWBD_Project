@@ -30,25 +30,33 @@ public class SecurityConfig {
 
         http.authorizeRequests(authorizeRequests -> authorizeRequests
                 // Public URLs
-                .antMatchers("/", "/home",  "/register/patient", "/register/specialist", "/register/signUpP", "/register/signUpS", "/perform_login", "/pacient","appointment", "/appointment/form",  "/login", "/register").permitAll()
+                .antMatchers("/", "/webjars/**", "/css/**", "/js/**","/doctors3.jpeg", "/images/**", "/images/*",  "/home",  "/register/patient", "/register/specialist", "/register/signUpP", "/register/signUpS", "/perform_login", "/pacient","appointment", "/appointment/form",  "/login", "/register").permitAll()
                 // URLs accessible to all authenticated users
                 .antMatchers("/pacient/**").hasAnyRole("PACIENT", "ADMIN")
                 .antMatchers("/journalPages/**").hasAnyRole("PACIENT", "ADMIN")
+                .antMatchers("/appointment/form").hasAnyRole(  "PACIENT")
+                .antMatchers("/specialist").hasAnyRole( "PACIENT")
                 .antMatchers("/specialist/getSpecialistByName/**").hasAnyRole( "ADMIN", "PACIENT", "SPECIALIST")
                 .antMatchers("/specialist/getDoctorsList").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
                 .antMatchers("/specialist/getSpecialistByEmail/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
-                .antMatchers("/appointments/getAppPS/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
-                .antMatchers("/appointments/newApp").hasAnyRole( "ADMIN", "PACIENT")
+                .antMatchers("/appointment/getAppPS/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
+                .antMatchers("/appointment/appointmentList/**").hasAnyRole("SPECIALIST",  "PACIENT")
+                .antMatchers("/appointment/appointmentList/*").hasAnyRole("SPECIALIST",  "PACIENT")
+                .antMatchers("/appointment/newApp").hasAnyRole( "ADMIN", "PACIENT")
+                .antMatchers("/appointment/status-selection").hasAnyRole( "SPECIALIST", "PACIENT")
+
                 // URLs accessible only to specialists and admin
                 .antMatchers("/journalPages/getpagesForSpecialist/*").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/specialist/**").hasAnyRole("SPECIALIST", "ADMIN")
-                .antMatchers("/appointments/**").hasAnyRole("SPECIALIST", "ADMIN")
+                .antMatchers("/pacient").hasAnyRole("SPECIALIST")
+                .antMatchers("/appointment/**").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/reviews/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
                 .antMatchers("/payment/**").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/location/**").hasAnyRole("SPECIALIST", "ADMIN")
                 // Any other URLs require authentication
                 .anyRequest().authenticated()
         );
+
         http.userDetailsService(userDetailsService)
                 .headers((headers) -> headers.disable());
 //                .csrf(csrf -> csrf

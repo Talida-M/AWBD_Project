@@ -1,6 +1,7 @@
 package com.example.demo.repositories;
 
 import com.example.demo.dtos.SpecialistDTO;
+import com.example.demo.entity.Pacient;
 import com.example.demo.entity.Specialist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +35,8 @@ List<SpecialistDTO> getSpecialistsByname(@Param("firstname") String firstname, @
             " JOIN User user on  user.id = sp.user.id " +
             " where  LOWER(user.email) LIKE LOWER(:email) ")
     Optional<Specialist> getDoctorByEmail(String email);
+
+    @Query("SELECT DISTINCT specialist FROM Specialist specialist " +
+            "WHERE specialist.user.id = :id")
+    Optional<Specialist> getSpecialistId(Integer id);
 }

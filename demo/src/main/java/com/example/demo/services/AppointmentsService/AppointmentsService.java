@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -95,11 +96,31 @@ public class AppointmentsService implements  IAppointmentsService{
     @Transactional
     @Override
     public Page<AppointmentDTO> getAppointmentsForDoctorByAppointmentStatus(String status, Integer specialistID, int page, int size) {
-        Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
-        Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
-        return appointmentsRepo.getAppointmentsForDoctorByAppointmentStatus(status, specialistID, pageable);
-    }
+        Logger logger = LoggerFactory.getLogger(this.getClass());
 
+        try {
+            Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
+            Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
+            return appointmentsRepo.getAppointmentsForDoctorByAppointmentStatus(status, specialistID, pageable);
+        } catch (Exception e) {
+            logger.error("Failed to fetch appointments for doctor", e);
+            throw e;
+        }
+    }
+    @Transactional
+    @Override
+    public Page<AppointmentDTO> getAppointmentsForPacientByStatusPage(String status, Integer pacientId, int page, int size) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        try {
+            Sort sortByAppointmentDate = Sort.by("appointmentDate").ascending();
+            Pageable pageable = PageRequest.of(page, size, sortByAppointmentDate);
+            return appointmentsRepo.getAppointmentsForPacientByStatusPage(status, pacientId, pageable);
+        } catch (Exception e) {
+            logger.error("Failed to fetch appointments for doctor", e);
+            throw e;
+        }
+    }
     @Transactional
     @Override
     public Page<AppointmentDTO> getAllDoctorAppointmentsForDoctorSortedByDate(int doctorId, int page, int size) {

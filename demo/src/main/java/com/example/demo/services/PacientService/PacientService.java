@@ -51,8 +51,8 @@ public class PacientService implements IPacientService{
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getFirstName());
             newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            newUser.setRole("Pacient");
-            Authority authority = authorityService.getAuthorityByName("ROLE_USER");
+            newUser.setRole("PACIENT");
+            Authority authority = authorityService.getAuthorityByName("ROLE_PACIENT");
             newUser.setAuthority(authority);
             userRepo.save(newUser);
 
@@ -91,5 +91,11 @@ public class PacientService implements IPacientService{
 
         user.setDeleted(true);
         userRepo.save(user);
+    }
+
+    @Override
+    public Integer getPacientByUserId(Integer id) {
+        return pacientsRepo.getPacientId(id).orElseThrow(
+                () -> new NoSuchElementException("User with this email not found")).getPacientId();
     }
 }

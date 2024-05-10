@@ -5,9 +5,11 @@
     <title>Mental Health App</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/5.3.3/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.5.1/css/all.min.css"/>
+
+
 </head>
 <body>
 <div class="container">
@@ -20,8 +22,8 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto topnav" id="loggedInNav">
                 <!-- Navbar items to show when logged in -->
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{'/appointment'}">Appointments</a>
+                <li sec:authorize="hasAnyRole('SPECIALIST', 'PACIENT')" class="nav-item">
+                    <a class="nav-link" th:href="@{'/appointment/status-selection'}">Appointments</a>
                 </li>
                 <li sec:authorize="hasAnyRole('SPECIALIST')" class="nav-item">
                     <a class="nav-link" th:href="@{'/pacient'}">Pacients</a>
@@ -30,53 +32,82 @@
                 <li sec:authorize="hasAnyRole('PACIENT')" class="nav-item">
                     <a class="nav-link" th:href="@{'/specialist'}">Specialists</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/appointment/form'}">
+                <li  sec:authorize="hasAnyRole('PACIENT')" class="nav-item">
+                    <a class="nav-link btn-primary"  th:href="@{'/appointment/form'}">
                         <i class="fas fa-plus-circle"></i> Add Appointment
                     </a>
                 </li>
             </ul>
-
-            <ul class="navbar-nav ms-auto topnav" id="loginNav">
+            <ul class="navbar-nav ms-auto topnav">
+<!--            <ul class="navbar-nav ms-auto topnav" id="loginNav">-->
                 <!-- Navbar items to show when not logged in -->
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link btn-primary" th:href="@{'/login'}">
                         <i class="fas fa-sign-in-alt"></i> Log In
                     </a>
                 </li>
-            </ul>
-            <ul class="navbar-nav ms-auto topnav" id="registerNav">
+<!--            </ul>-->
+<!--            <ul class="navbar-nav ms-auto topnav" id="registerNav">-->
                 <!-- Navbar items to show when not logged in -->
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link btn-primary" th:href="@{'/register'}">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </a>
                 </li>
-            </ul>
+<!--            </ul>-->
+
+            <li sec:authorize="hasAnyRole('ADMIN','SPECIALIST', 'PACIENT')" class="nav-item">
+                <form id="logout-form" th:action="@{/logout}" method="post">
+                    <button type="submit" class="nav-link btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
+                </ul>
         </div>
     </nav>
 
-    <div class="text-center mt-3">
-        <h1 style="color: blue;">Mental Health App</h1>
-        <img src="src/main/resources/static/doctors2.jpg" alt="Mental Health App Logo" >
-        <h2 id="message"></h2>
-    </div>
+<!--    <div class="text-center mt-3">-->
+<!--        <h1 style="color: blue;">Mental Health App</h1>-->
+<!--&lt;!&ndash;        &ndash;&gt;-->
+<!--        <h2 id="message"></h2>-->
+
+<!--    </div>-->
+    <section th:style="'background: url(/doctors3.jpeg) center center no-repeat; display: flex; flex-direction:column; justify-content: space-between; height: 100vh;padding: 1em; box-sizing: border-box; background-size: cover;'"  class="hero" >
+
+        <header class="hero-header">
+            <h1 class="hero-title">Mental Health App</h1>
+        </header>
+    </section>
+    <article>
+        <h2>Welcome!</h2>
+        <p th:style="'background-color: rgba(255, 255, 255, 0.5);font-weight: 700;'">Our mission is to help you prioritize your mental health and find balance.<br />It's been taboo for decades,
+            if not centuries, mental health is now widely discussed.
+            In these exceptional times, many of us are faced with
+            psychological problems related to isolation, anxiety, loneliness, frustration,
+            addictions, insecurities, depression, fears and worries - issues that are being addressed in a
+            Awareness that one's loneliness, for example, is common to all humanity, is essential to understanding it, being free of it and learning what it means to be safe and well in an uncertain world.
+            We want our app to make your story heard and your road to healing easier with the help of our licensed specialists.
+</p>
+    </article>
+<!--    <img th:src="@{/doctors.jpeg}" alt="Mental Health App Logo">-->
 </div>
+
 
 <script>
 
-    $(document).ready(function() {
-        let token = localStorage.getItem('token');
-        if (token) {
-            $('#message').text('Welcome doctor !');
-            $('#loggedInNav').show();
-            $('#loginNav').hide();
-        } else {
-            $('#message').text('Please log in !');
-            $('#loggedInNav').hide();
-            $('#loginNav').show();
-        }
-    });
+    // $(document).ready(function() {
+    //     let token = localStorage.getItem('token');
+    //     if (token) {
+    //         $('#message').text('Welcome doctor !');
+    //         $('#loggedInNav').show();
+    //         $('#loginNav').hide();
+    //     } else {
+    //         $('#message').text('Please log in !');
+    //         $('#loggedInNav').hide();
+    //         $('#loginNav').show();
+    //     }
+    // });
 </script>
 
 </body>

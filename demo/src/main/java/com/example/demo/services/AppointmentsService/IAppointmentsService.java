@@ -23,4 +23,5 @@ public interface IAppointmentsService {
     Page<AppointmentDTO> getAppointmentsForDoctorByAppointmentStatus(String status, Integer specialistID, int page, int size);
     Page<AppointmentDTO> getAllDoctorAppointmentsForDoctorSortedByDate(int doctorId, int page, int size);
     AppointmentDTO findById(Integer l);
+    Page<AppointmentDTO> getAppointmentsForPacientByStatusPage(String status, Integer pacientId, int page, int size);
 }

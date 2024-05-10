@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Status Selection</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Status Card -->
+        <div class="col-md-4" th:each="status : ${statuses}">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${status}">Status</h5>
+                    <a th:href="@{|/appointment/appointmentList/${status}|}" class="btn btn-primary">View Appointments</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+</body>
+</html>

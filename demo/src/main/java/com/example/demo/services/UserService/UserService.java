@@ -50,4 +50,10 @@ public class UserService implements IUserService{
     public List<UserDTO> getUsers() {
         return userRepo.getUsers();
     }
+
+    @Override
+    public Integer getUserByEmail(String email) {
+        return userRepo.getUserByEmail(email).orElseThrow(
+                () -> new NoSuchElementException("User with this email not found")).getId();
+    }
 }

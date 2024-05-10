@@ -29,6 +29,10 @@ public interface PacientsRepo extends  JpaRepository<Pacient,Integer> {
     @Query("SELECT DISTINCT pacient FROM Pacient pacient " +
             "WHERE pacient.username = :username")
     Optional<Pacient> getPacientByUsername(@Param("username") String username);
+
+    @Query("SELECT DISTINCT pacient FROM Pacient pacient " +
+            "WHERE pacient.user.id = :id")
+    Optional<Pacient> getPacientId(Integer id);
     @Query("SELECT   NEW com.example.demo.dtos.PacientDTO(pacient.pacientId, u.firstName, u.lastName, u.email, u.phoneNumber, u.address,  pacient.socialCategory, pacient.username, pacient.hasInsurance) FROM Pacient pacient " +
             "JOIN User u ON  u.id = pacient.user.id" )
     List<PacientDTO> getPacients();

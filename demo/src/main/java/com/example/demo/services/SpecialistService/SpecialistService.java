@@ -45,7 +45,11 @@ public class SpecialistService implements ISpecialistService{
         this.authorityService = authorityService;
         this.passwordEncoder = passwordEncoder;
     }
-
+    @Override
+    public Integer getSpecialistByUserId(Integer id) {
+        return specialistRepo.getSpecialistId(id).orElseThrow(
+                () -> new NoSuchElementException("User with this email not found")).getSpecialistId();
+    }
     @Transactional
     @Override
     public Specialist registerDoctor(RegisterSpecialistDTO user) {
@@ -59,8 +63,8 @@ public class SpecialistService implements ISpecialistService{
             newUser.setEmail(user.getEmail());
             newUser.setFirstName(user.getFirstName());
             newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            newUser.setRole("Specialist");
-            Authority authority = authorityService.getAuthorityByName("ROLE_DOCTOR");
+            newUser.setRole("SPECIALIST");
+            Authority authority = authorityService.getAuthorityByName("ROLE_SPECIALIST");
             newUser.setAuthority(authority);
             userRepo.save(newUser);
 

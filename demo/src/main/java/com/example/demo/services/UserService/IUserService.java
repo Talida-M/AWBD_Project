@@ -12,8 +12,10 @@ import java.util.List;
 public interface IUserService {
 //    UserResponse login(String email, String password);
     List<UserDTO> getUsers();
+    Integer getUserByEmail(String email);
     LoginDTO login(String email, String password);
 
     @Transactional
     User update(Integer id, UserUpdateDTO updateUser);
+
 }

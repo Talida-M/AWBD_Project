@@ -26,6 +26,17 @@ public class AppointmentDTO {
         this.appointmentStatus = appointmentStatus;
         this.pacientName = pacientName;
         this.pacientEmail = pacientEmail;
+
+    }
+    public AppointmentDTO(Integer appointmentId, String appointmentType, LocalDateTime appointmentDate, String appointmentStatus, String pacientName, String pacientEmail, String specialistName, String specialistEmail) {
+        AppointmentId = appointmentId;
+        this.appointmentType = appointmentType;
+        this.appointmentDate = appointmentDate;
+        this.appointmentStatus = appointmentStatus;
+        this.pacientName = pacientName;
+        this.pacientEmail = pacientEmail;
+        this.specialistName = specialistName;
+        this.specialistEmail = specialistEmail;
     }
 
 

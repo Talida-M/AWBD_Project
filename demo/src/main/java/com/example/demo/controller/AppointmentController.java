@@ -1,10 +1,16 @@
 package com.example.demo.controller;
 
-import com.example.demo.dtos.*;
+import com.example.demo.dtos.AppointmentDTO;
+import com.example.demo.dtos.NewAppointmentDTO;
 import com.example.demo.entity.Appointment;
+import com.example.demo.entity.Authority;
+import com.example.demo.entity.StatusAppointment;
 import com.example.demo.entity.User;
 import com.example.demo.services.AppointmentsService.IAppointmentsService;
+import com.example.demo.services.AuthorityService.IAuthorityService;
 import com.example.demo.services.PacientService.IPacientService;
+import com.example.demo.services.SpecialistService.ISpecialistService;
+import com.example.demo.services.UserService.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,13 +18,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @Validated
@@ -28,9 +41,14 @@ public class AppointmentController {
 
     @Autowired
     public IAppointmentsService appointmentsService;
-
-    public AppointmentController(IAppointmentsService appointmentsService) {
+    private IUserService userService;
+    private  IPacientService pacientService;
+    private ISpecialistService specialistService;
+    public AppointmentController(IAppointmentsService appointmentsService, IUserService userService, IPacientService pacientService, ISpecialistService specialistService) {
         this.appointmentsService = appointmentsService;
+        this.userService = userService;
+        this.pacientService = pacientService;
+        this.specialistService = specialistService;
     }
 
     @Operation(summary = "Create a new appointment", responses = {
@@ -160,19 +178,57 @@ public class AppointmentController {
 //        model.addAttribute("appointments",appointments);
 //        return new ModelAndView("appointmentList.html");
 //    }
-    @RequestMapping("")
-    public ModelAndView getAppointments(Model model){
-        List<Appointment> appointments = appointmentsService.getAppointments();
-        model.addAttribute("appointments",appointments);
-        System.out.println("appointments" + appointments);
-        return new ModelAndView ("appointmentList");
+//    @RequestMapping("")
+//    public ModelAndView getAppointments(Model model){
+//        List<Appointment> appointments = appointmentsService.getAppointments();
+//        model.addAttribute("appointments",appointments);
+//        System.out.println("appointments" + appointments);
+//        return new ModelAndView ("appointmentList");
+//    }
+
+    @GetMapping("/status-selection")
+    public ModelAndView showStatusSelection(Model model) {
+        List<String> statuses = Arrays.asList(StatusAppointment.In_Asteptare.toString(), StatusAppointment.Programare_Acceptata.toString(), StatusAppointment.Programare_Realizata.toString());
+        model.addAttribute("statuses", statuses);
+        return new ModelAndView("status-cards");
     }
+
 
     @RequestMapping("/form")
     public ModelAndView add(Model model){
         model.addAttribute("appointment",new Appointment());//mapper.requestAuthor(new RequestAuthor()));
         return new ModelAndView("appointmentForm");
     }
+
+
+
+    @GetMapping("/appointmentList/{status}")
+    public ModelAndView getAppointmentsByStatus(@PathVariable String status, Model model, Authentication authentication) {
+        // Extract user details from Authentication object
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        // Fetch user authorities
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
+        // Determine the user role and fetch data accordingly
+        if (authorities.contains(new SimpleGrantedAuthority("ROLE_PACIENT"))) {
+            // Assume you have a method to find pacientId by email
+            Integer userId = userService.getUserByEmail(email);
+            Integer pacientId = pacientService.getPacientByUserId(userId);
+            Page<AppointmentDTO> appointments = appointmentsService.getAppointmentsForPacientByStatusPage(status, pacientId, 0, 5);
+            model.addAttribute("appointments", appointments);
+        } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_SPECIALIST"))) {
+            // Similarly, find specialistId
+            Integer userId = userService.getUserByEmail(email);
+            Integer specialistId = specialistService.getSpecialistByUserId(userId);
+            Page<AppointmentDTO> appointments = appointmentsService.getAppointmentsForDoctorByAppointmentStatus(status, specialistId, 0, 5);
+            model.addAttribute("appointments", appointments);
+        }
+
+        return new ModelAndView("appointmentList" );
+    }
+
 
 
 

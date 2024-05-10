@@ -15,7 +15,7 @@ public interface ISpecialistService {
     List<SpecialistDTO> getDoctorsList();
 
     Optional<SpecialistDTO> getSpecialistByEmail(String email);
-
+    Integer getSpecialistByUserId(Integer id);
     List<SpecialistDTO> getSpecialistByName(String fname, String lname);
     void delete(Integer id);
     List<SpecialistDTO> findAll();

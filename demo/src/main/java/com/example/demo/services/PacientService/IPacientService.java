@@ -12,5 +12,6 @@ public interface IPacientService {
      void registerPacient(RegisterPacientDTO user);
      List<DoctorPacientsDTO> getPacientList(Integer id);
      List<PacientDTO> getPacients();
+     Integer getPacientByUserId(Integer id);
      void delete(Integer id);
 }
