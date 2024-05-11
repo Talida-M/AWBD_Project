@@ -42,10 +42,15 @@ public class AppointmentsService implements  IAppointmentsService{
     @Transactional
     @Override
     public void  newAppointment (NewAppointmentDTO app) {
+        try {
         String emailP = app.getPacientEmail();
-        Pacient pacient = pacientsRepo.getPacientByEmail(emailP).orElse(null);
         String emailS = app.getSpecialistEmail();
-        Specialist specialist = specialistRepo.getDoctorByEmail(emailS).orElse(null);
+        if (emailP == null || emailS == null) {
+            throw new RuntimeException("Emails are wrong");
+        }
+        Pacient pacient = pacientsRepo.getPacientByEmail2(emailP);
+
+        Specialist specialist = specialistRepo.getDoctorByEmail2(emailS);
             Appointment newapp = new Appointment();
             newapp.setAppointmentDate(app.getAppointmentDate());
             newapp.setAppointmentType(app.getAppointmentType());
@@ -53,7 +58,11 @@ public class AppointmentsService implements  IAppointmentsService{
             newapp.setPacient(pacient);
             newapp.setSpecialist(specialist);
             appointmentsRepo.save(newapp);
-
+        } catch (Exception e) {
+            Logger logger = LoggerFactory.getLogger(this.getClass());
+            logger.error("Error creating new appointment", e);
+            throw e;
+        }
     }
 
     @Override

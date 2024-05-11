@@ -22,9 +22,12 @@ public interface PacientsRepo extends  JpaRepository<Pacient,Integer> {
             " where app.specialist.specialistId = :id  AND app.appointmentStatus = 'Programare_Realizata' ")
     List<DoctorPacientsDTO> getPacientsList(Integer id);
     @Query("SELECT DISTINCT pacient FROM Pacient pacient " +
-            " JOIN User user on  user.id = pacient.user.id" +
-            " where  user.email = :email")
+            " where  pacient.user.email = :email")
     Optional<Pacient> getPacientByEmail(String email);
+
+    @Query("SELECT DISTINCT pacient FROM Pacient pacient " +
+            " where  pacient.user.email = :email")
+    Pacient getPacientByEmail2(String email);
 
     @Query("SELECT DISTINCT pacient FROM Pacient pacient " +
             "WHERE pacient.username = :username")

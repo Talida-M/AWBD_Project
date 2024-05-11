@@ -209,7 +209,7 @@ public class AppointmentController {
         logger.info("Received appointment: {}", appointment);
 
         appointmentsService.newAppointment(appointment);
-        return new ModelAndView("redirect:/status-selection");
+        return new ModelAndView("redirect:/");
     }
 
 

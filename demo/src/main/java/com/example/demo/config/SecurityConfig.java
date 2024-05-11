@@ -73,10 +73,7 @@ public class SecurityConfig {
                         .permitAll()
         )
                 .exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"));;
-        http .logout(logout -> logout
-                .logoutUrl("/perform_logout")
-                .permitAll()
-        );
+
 //        http.exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"));//                .httpBasic(Customizer.withDefaults())
 //        http .userDetailsService(userDetailsService)
 //             .csrf().disable(); // Disable CSRF protection for simplicity

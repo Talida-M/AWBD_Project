@@ -93,15 +93,12 @@ public class Pacient  {
     public String toString() {
         return "Pacient{" +
                 "pacientId=" + pacientId +
-                ", user=" + user +
-                ", socialCategory=" + socialCategory +
+                ", user=" + (user != null ? "User[id=" + user.getId() + "]" : "null") +
+                ", socialCategory='" + socialCategory + '\'' +
                 ", username='" + username + '\'' +
-                ", appointments=" + appointments +
-                ", doctorReviews=" + doctorReviews +
-                ", hasInsurance=" + hasInsurance +
-                ", userPageJournal=" + userPageJournal +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {

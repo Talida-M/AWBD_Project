@@ -12,8 +12,9 @@ public class NewAppointmentDTO {
   private String specialistEmail;
   private String appointmentType;
 
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private LocalDateTime appointmentDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime appointmentDate;
+
 
     public NewAppointmentDTO(String pacientEmail, String specialistEmail, String appointmentType, LocalDateTime appointmentDate) {
         this.pacientEmail = pacientEmail;

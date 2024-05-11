@@ -32,9 +32,11 @@ public interface SpecialistRepo extends JpaRepository<Specialist, Integer> {
 List<SpecialistDTO> getSpecialistsByname(@Param("firstname") String firstname, @Param("lastname") String lastname);
 
     @Query("SELECT DISTINCT sp FROM Specialist sp " +
-            " JOIN User user on  user.id = sp.user.id " +
-            " where  LOWER(user.email) LIKE LOWER(:email) ")
+            " where  LOWER(sp.user.email) LIKE LOWER(:email) ")
     Optional<Specialist> getDoctorByEmail(String email);
+    @Query("SELECT DISTINCT sp FROM Specialist sp " +
+            " where  LOWER(sp.user.email) LIKE LOWER(:email) ")
+    Specialist getDoctorByEmail2(String email);
 
     @Query("SELECT DISTINCT specialist FROM Specialist specialist " +
             "WHERE specialist.user.id = :id")

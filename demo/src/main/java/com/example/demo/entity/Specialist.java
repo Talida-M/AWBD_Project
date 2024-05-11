@@ -154,6 +154,8 @@ public class Specialist {
     @Override
     public String toString() {
         return "Specialist{" +
+                "specialistId=" + specialistId +
+                ", user=" + (user != null ? "User[id=" + user.getId() + "]" : "null") +
                 "specialty='" + specialty + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
