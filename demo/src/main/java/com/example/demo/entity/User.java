@@ -48,9 +48,6 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pacient pacient;
 
-//    @ManyToOne(targetEntity = Authority.class)
-//    @PrimaryKeyJoinColumn(name = "authority_id")
-//    private Authority authority;
     @ManyToOne
     @JoinColumn(name = "authority_id")
     private Authority authority;

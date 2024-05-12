@@ -52,9 +52,6 @@ public class RegisterController {
     // Endpoint to handle patient registration submission
     @PostMapping("/signUpP")
     public ModelAndView createPacient(@Valid @ModelAttribute("patient") RegisterPacientDTO patient) {
-//        if (bindingResult.hasErrors()) {
-//            return new ModelAndView( "registerPatient");
-//        }
         pacientService.registerPacient(patient);
         return new ModelAndView( "redirect:/");
     }
@@ -62,9 +59,6 @@ public class RegisterController {
     // Endpoint to handle doctor registration submission
     @PostMapping("/signUpS")
     public ModelAndView createSpecialist(@Valid @ModelAttribute("specialist") RegisterSpecialistDTO specialist) {
-//        if (bindingResult.hasErrors()) {
-//            return new ModelAndView( "registerSpecialist");
-//        }
         specialistService.registerDoctor(specialist);
         return new ModelAndView( "redirect:/");
     }

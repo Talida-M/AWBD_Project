@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,6 +44,7 @@ public class SpecialistControllerTest {
     private static final Logger log = LoggerFactory.getLogger(SpecialistControllerTest.class);
 
     @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "ADMIN"})
     public void createSpecialist() throws Exception {
         log.info("Executing createSpecialist test...");
 
@@ -53,6 +56,7 @@ public class SpecialistControllerTest {
 
         mockMvc.perform((RequestBuilder) post("/specialist/signUpS")
                         .contentType("application/json")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(newPacient)))
                 .andExpect(status().isOk());
         verify(specialistService).registerDoctor(any(RegisterSpecialistDTO.class));
@@ -63,6 +67,7 @@ public class SpecialistControllerTest {
 
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT", "SPECIALIST"})
     public void getDoctorsList() throws Exception {
         log.info("Executing getDoctorsList test...");
 
@@ -80,6 +85,7 @@ public class SpecialistControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "ADMIN", "PACIENT"})
     public void getSpecialistByEmail() throws Exception {
         log.info("Executing getSpecialistByEmail test...");
 
@@ -97,6 +103,7 @@ public class SpecialistControllerTest {
 
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT", "SPECIALIST"})
     public void getSpecialistByName() throws Exception {
         log.info("Executing getSpecialistByName test...");
 
@@ -114,6 +121,7 @@ public class SpecialistControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"SPECIALIST", "ADMIN"})
     public void delete() throws Exception {
         log.info("Executing delete test...");
 
@@ -121,6 +129,7 @@ public class SpecialistControllerTest {
 
         mockMvc.perform(patch("/specialist/deleteS/{id}", id)
                         .contentType("application/json")
+                        .with(csrf())
                         .content(String.valueOf(Long.parseLong(objectMapper.writeValueAsString(id)))))
                 .andExpect(status().isNoContent());
 

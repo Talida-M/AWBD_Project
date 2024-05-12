@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("mysql")
 public class ReviewServiceTest {
     @Mock
     private SpecialistRepo specialistRepo;
@@ -44,9 +46,9 @@ public class ReviewServiceTest {
     void whenPacientAndSpecialistExist_createReview_savesNewReview() {
         // Arrange
         ReviewDTO reviewDTO = new ReviewDTO(null, "Great service", LocalDateTime.now(), 5, "user123", "specialist@example.com");
-        Pacient existingPacient = new Pacient(); // assuming Pacient is a valid entity
+        Pacient existingPacient = new Pacient();
         existingPacient.setUsername(reviewDTO.getUsername());
-        Specialist existingSpecialist = new Specialist(); // assuming Specialist is a valid entity
+        Specialist existingSpecialist = new Specialist();
 
 
         when(pacientsRepo.getPacientByUsername(reviewDTO.getUsername())).thenReturn(Optional.of(existingPacient));

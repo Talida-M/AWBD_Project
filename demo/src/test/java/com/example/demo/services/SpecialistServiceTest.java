@@ -1,23 +1,35 @@
 package com.example.demo.services;
 
-import antlr.collections.List;
+import com.example.demo.controller.SpecialistController;
 import com.example.demo.dtos.NewLocationDTO;
 import com.example.demo.dtos.PacientDTO;
 import com.example.demo.dtos.RegisterSpecialistDTO;
 import com.example.demo.dtos.SpecialistDTO;
+import com.example.demo.entity.Authority;
+import com.example.demo.entity.Location;
 import com.example.demo.entity.Specialist;
 import com.example.demo.entity.User;
 import com.example.demo.exception.RegisterException;
+import com.example.demo.repositories.LocationRepo;
 import com.example.demo.repositories.SpecialistRepo;
 import com.example.demo.repositories.UserRepo;
+import com.example.demo.services.AuthorityService.AuthorityService;
+import com.example.demo.services.LocationsService.LocationService;
 import com.example.demo.services.SpecialistService.SpecialistService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.*;
 
@@ -31,8 +43,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-
 public class SpecialistServiceTest {
+
 
     @InjectMocks
     private SpecialistService specialistService;
@@ -43,13 +55,28 @@ public class SpecialistServiceTest {
     @Mock
     private UserRepo userRepo;
 
+    @Mock
+    private  LocationRepo locationRepo;
+
+    @Mock
+    private LocationService locationService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private AuthorityService authorityService;
+
     @Test
     void whenEmailNotUsed_registerDoctor_savesSpecialist() {
-        List<NewLocationDTO> locations = new ArrayList<>();
+        java.util.List<NewLocationDTO> locations = new ArrayList<>();
         locations.add(new NewLocationDTO(1L, "Location 1", "Address 1"));
         locations.add(new NewLocationDTO(2L, "Location 2", "Address 2"));
-        RegisterSpecialistDTO dto = new RegisterSpecialistDTO("John", "Doe", "johndoe@example.com", "1234567890", "123 Street", "password", "Specialty", "Description", 100.0, "9AM-5PM", locations);
+        RegisterSpecialistDTO dto = new RegisterSpecialistDTO("John", "Doe", "johndoe@example.com", "1234567890", "123 Street", "password", "Specialty", "Description", 100.0, "9AM-5PM",  locations);
         when(userRepo.getUserByEmail(dto.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(dto.getPassword())).thenReturn("encodedPassword");
+
+        Authority authority = new Authority("ROLE_SPECIALIST");
+        when(authorityService.getAuthorityByName("ROLE_SPECIALIST")).thenReturn(authority); // Configure mock to return a dummy Authority
 
         // Act
         Specialist result = specialistService.registerDoctor(dto);
@@ -58,6 +85,10 @@ public class SpecialistServiceTest {
         assertNotNull(result);
         verify(userRepo).save(any(User.class));
         verify(specialistRepo).save(any(Specialist.class));
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepo).save(userCaptor.capture());
+        Assertions.assertEquals("encodedPassword", userCaptor.getValue().getPassword(), "Password should be encoded");
+
     }
 
     @Test
@@ -99,20 +130,22 @@ public class SpecialistServiceTest {
     }
 
     @Test
-    void whenSpecialistExists_getSpecialistByName_returnsListOfSpecialistDTO() {
-        // Arrange
+    public void whenSpecialistExists_getSpecialistByName_returnsListOfSpecialistDTO() throws Exception {
         String firstName = "John";
         String lastName = "Doe";
-        List<SpecialistDTO> expectedList = Arrays.asList(new SpecialistDTO());
+        java.util.List<SpecialistDTO> expectedList = new ArrayList<>();
         when(specialistRepo.getSpecialistsByname(firstName, lastName)).thenReturn(expectedList);
 
         // Act
-        List<SpecialistDTO> result = specialistService.getSpecialistByName(firstName, lastName);
+        java.util.List<SpecialistDTO> result = specialistService.getSpecialistByName(firstName, lastName);
 
         // Assert
         assertNotNull(result);
+        Assertions.assertEquals(expectedList, result);
 
     }
+
+
 
     @Test
     void whenSpecialistExists_delete_marksSpecialistAndUserAsDeleted() {
@@ -136,17 +169,15 @@ public class SpecialistServiceTest {
 
     @Test
     public void getSpecialistList() throws Exception{
-        SpecialistDTO entry1 = new SpecialistDTO(1,"ion","daniel","email","071234567","adresa", "medic", "descriere",200, "marti");
-        SpecialistDTO entry2 = new SpecialistDTO(2,"mircea","dinu","email","071254567","adresa2", "medic", "descriere",200, "marti");
+        SpecialistDTO entry1 = new SpecialistDTO(1, "ion", "daniel", "email", "071234567", "adresa", "medic", "descriere", 200.00, "marti");
+        SpecialistDTO entry2 = new SpecialistDTO(2, "mircea", "dinu", "email", "071254567", "adresa2", "medic", "descriere", 200.00, "marti");
 
         List<SpecialistDTO> list = new ArrayList<>();
         list.add(entry1);
         list.add(entry2);
-        when(specialistService.getDoctorsList()).thenReturn(list);
+        when(specialistRepo.getSpecialists()).thenReturn(list);
 
-        mockMvc.perform(get("/specialist"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("specialistList"))
-                .andExpect(model().attribute("specialists",list));
-    }
+        java.util.List<SpecialistDTO> result = specialistService.getDoctorsList();
+
+        Assertions.assertEquals(list, result); }
 }

@@ -7,11 +7,13 @@ import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.services.JournalService.IJournalPageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,14 +29,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = JournalPageController.class)
-@ActiveProfiles("h2")
-@AutoConfigureTestDatabase
-@SpringJUnitWebConfig
+//@ActiveProfiles("h2")
 public class JournalPageControllerTest {
 
     @Autowired
@@ -48,12 +49,14 @@ public class JournalPageControllerTest {
     private static final Logger log = Logger.getLogger(JournalPageControllerTest.class.getName());
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT"})
     public void createJournalPage() throws Exception {
         log.info("Starting createJournalPage test...");
         NewPageDTO newPacient = new NewPageDTO(LocalDateTime.now(), "johndoe@example.com", "1234567890", true);
 
         mockMvc.perform(post("/journalPages/newpage")
                         .contentType("application/json")
+                        .with(csrf())
                        .content(objectMapper.writeValueAsString(newPacient)))
                 .andExpect(status().isOk());
         verify(journalPageService).createPage(any(NewPageDTO.class));
@@ -61,6 +64,7 @@ public class JournalPageControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT"})
     public void getUserJournalPages() throws Exception {
         int pacientId = 1;
 
@@ -68,21 +72,23 @@ public class JournalPageControllerTest {
 
         mockMvc.perform(get("/journalPages/getpages/1", pacientId)
                         .contentType("application/json")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(pacientList)))
                 .andExpect(status().isOk());
         verify(journalPageService).getUserJournalPages(pacientId);
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT"})
     public void changePageStatus() throws Exception {
         boolean status = true; // Specify a valid status
         int pageId = 1; // Specify a valid pageId
 
         log.info("Starting changePageStatus test...");
 
-
         mockMvc.perform(patch("/journalPages/changestatus/{status}/{pageId}", status, pageId)
                         .contentType("application/json")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(status)))
                 .andExpect(status().isOk());
         verify(journalPageService).changestatus(status, pageId);
@@ -91,6 +97,7 @@ public class JournalPageControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "SPECIALIST"})
     public void getPacientJournalPagesBySpecialist() throws Exception {
         Integer pacientId = 1;
         log.info("Starting getPacientJournalPagesBySpecialist test...");
@@ -99,6 +106,7 @@ public class JournalPageControllerTest {
 
         mockMvc.perform(get("/journalPages/getpagesForSpecialist/1", pacientId)
                         .contentType("application/json")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(pacientList)))
                 .andExpect(status().isOk());
         verify(journalPageService).getPacientJournalPagesBySpecialist(pacientId);

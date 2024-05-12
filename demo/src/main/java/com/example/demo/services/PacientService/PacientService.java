@@ -27,9 +27,9 @@ public class PacientService implements IPacientService{
 
     @Autowired
     private final UserRepo userRepo;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private IAuthorityService authorityService;
+    private final IAuthorityService authorityService;
 
     public PacientService(PacientsRepo pacientsRepo, UserRepo userRepo, IAuthorityService authorityService, PasswordEncoder passwordEncoder) {
         this.pacientsRepo = pacientsRepo;

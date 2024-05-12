@@ -47,6 +47,8 @@ public class AppointmentController {
     private IUserService userService;
     private  IPacientService pacientService;
     private ISpecialistService specialistService;
+
+    @Autowired
     public AppointmentController(IAppointmentsService appointmentsService, IUserService userService, IPacientService pacientService, ISpecialistService specialistService) {
         this.appointmentsService = appointmentsService;
         this.userService = userService;
@@ -160,34 +162,6 @@ public class AppointmentController {
 
     }
 
-  //  @RequestMapping
-//    @GetMapping({"/appointment"})
-//    public ModelAndView getAppointmentsList(
-//            @RequestParam @Parameter(description = "specialist ID", required = true) Integer specialistID,
-//            @RequestParam(defaultValue = "0") @Parameter(description = "Page number") int page,
-//            @RequestParam(defaultValue = "10") @Parameter(description = "Page size") int size,
-//            Model model) {
-//
-//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate( specialistID, page, size);
-//        model.addAttribute("appointment", appointments);
-//
-//        return new ModelAndView("appointmentList.html");
-//
-//    }
-
-//    @RequestMapping("")
-//    public ModelAndView getAppointmentsList(Model model) {
-//        Page<AppointmentDTO> appointments = appointmentsService.getAllDoctorAppointmentsForDoctorSortedByDate('1',1,1);
-//        model.addAttribute("appointments",appointments);
-//        return new ModelAndView("appointmentList.html");
-//    }
-//    @RequestMapping("")
-//    public ModelAndView getAppointments(Model model){
-//        List<Appointment> appointments = appointmentsService.getAppointments();
-//        model.addAttribute("appointments",appointments);
-//        System.out.println("appointments" + appointments);
-//        return new ModelAndView ("appointmentList");
-//    }
 
     @GetMapping("/status-selection")
     public ModelAndView showStatusSelection(Model model) {
@@ -217,22 +191,17 @@ public class AppointmentController {
 
     @GetMapping("/appointmentList/{status}")
     public ModelAndView getAppointmentsByStatus(@PathVariable String status, Model model, Authentication authentication) {
-        // Extract user details from Authentication object
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String email = userDetails.getUsername();
 
-        // Fetch user authorities
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 
-        // Determine the user role and fetch data accordingly
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_PACIENT"))) {
-            // Assume you have a method to find pacientId by email
             Integer userId = userService.getUserByEmail(email);
             Integer pacientId = pacientService.getPacientByUserId(userId);
             Page<AppointmentDTO> appointments = appointmentsService.getAppointmentsForPacientByStatusPage(status, pacientId, 0, 5);
             model.addAttribute("appointments", appointments);
         } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_SPECIALIST"))) {
-            // Similarly, find specialistId
             Integer userId = userService.getUserByEmail(email);
             Integer specialistId = specialistService.getSpecialistByUserId(userId);
             Page<AppointmentDTO> appointments = appointmentsService.getAppointmentsForDoctorByAppointmentStatus(status, specialistId, 0, 5);

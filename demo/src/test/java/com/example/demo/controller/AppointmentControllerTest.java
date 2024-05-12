@@ -1,48 +1,49 @@
 package com.example.demo.controller;
 
-import antlr.collections.List;
 import com.example.demo.dtos.AppointmentDTO;
 import com.example.demo.dtos.NewAppointmentDTO;
-import com.example.demo.dtos.SpecialistDTO;
 import com.example.demo.entity.Appointment;
 import com.example.demo.services.AppointmentsService.IAppointmentsService;
+import com.example.demo.services.PacientService.IPacientService;
+import com.example.demo.services.SpecialistService.ISpecialistService;
+import com.example.demo.services.UserService.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import org.springframework.security.core.Authentication;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 
 @WebMvcTest(controllers = AppointmentController.class)
-@ActiveProfiles("h2")
-@AutoConfigureTestDatabase
-@SpringJUnitWebConfig
+//@ActiveProfiles("h2")
 public class AppointmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -53,53 +54,137 @@ public class AppointmentControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private IUserService userService;
+
+    @MockBean
+    private IPacientService pacientService;
+
+    @MockBean
+    private ISpecialistService specialistService;
+
+
     @Test
+    @WithMockUser(username="user", roles={ "ADMIN", "PACIENT"})
     public void createAppointment() throws Exception {
         NewAppointmentDTO newAppointmentDTO = new NewAppointmentDTO("patient@example.com", "specialist@example.com", "Checkup", LocalDateTime.now());
         mockMvc.perform((RequestBuilder) post("/appointment/newApp")
                         .contentType("application/json")
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(newAppointmentDTO)))
                 .andExpect(status().isOk());
         verify(appointmentsService).newAppointment(any(NewAppointmentDTO.class));
     }
 
     @Test
+    @WithMockUser(username="user", roles={"ADMIN", "PACIENT", "SPECIALIST"})
     public void getAppointmentsForPacientByStatus() throws Exception {
-        String status = "booked"; // Specify a valid status
-        int pacientId = 1; // Specify a valid pacientId
+        String status = "Programare_Acceptata";
+        int pacientId = 1;
 
-        List<AppointmentDTO> pacientList = Arrays.asList(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "jj", "jjj"));
+        java.util.List<AppointmentDTO> pacientList = java.util.List.of(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "ewx", "asx", "jj", "jjj"));
         when(appointmentsService.getAppointmentsForPacientByStatus(status, pacientId)).thenReturn(pacientList);
-        mockMvc.perform(get("/specialist/getSpecialistByName/John/Doe")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(pacientList)))
-                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/appointment/getAppPS/{status}/{pacientId}", status, pacientId)
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+
         verify(appointmentsService).getAppointmentsForPacientByStatus(status, pacientId);
     }
 
     @Test
-    public void getAppointmentsForDoctorByStatus() throws Exception {
-        String status = "confirmed"; // Specify a valid status
-        int specialistID = 1; // Specify a valid specialistID
+    @WithMockUser(username="user", roles={ "SPECIALIST", "PACIENT"})
+    public void getAppointmentsByStatusAsPacient() throws Exception {
+        // Arrange
+        String status = "In_Asteptare";
+        UserDetails mockUserDetails = Mockito.mock(UserDetails.class);
+        //Set<GrantedAuthority> authorities = new HashSet<>();
+        //authorities.add(new SimpleGrantedAuthority("ROLE_PACIENT"));
+        Authentication mockAuth = mock(Authentication.class);
+        when(mockAuth.getPrincipal()).thenReturn(mockUserDetails);
+        when(mockUserDetails.getUsername()).thenReturn("user@example.com");
+        //when(mockUserDetails.getAuthorities()).then((Answer<?>) authorities);
 
 
-        List<AppointmentDTO> pacientList = Arrays.asList(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "jj", "jjj"));
-        when(appointmentsService.getAppointmentsForPacientByStatus(status, specialistID)).thenReturn(pacientList);
-        mockMvc.perform(get("/appointment/getAppPD/{status}/{specialistID}", status, specialistID)
+        int userId = 1;
+        int pacientId = 1;
+        when(userService.getUserByEmail("user@example.com")).thenReturn(userId);
+        when(pacientService.getPacientByUserId(userId)).thenReturn(pacientId);
 
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(pacientList)))
-                .andExpect(status().isOk());
-        verify(appointmentsService).getAppointmentsForDoctorByStatus(status, specialistID);
+        Page<AppointmentDTO> page = new PageImpl<>(java.util.List.of(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "ewx", "asx", "jj", "jjj")));
+        when(appointmentsService.getAppointmentsForPacientByStatusPage(status, pacientId, 0, 5)).thenReturn(page);
+
+        // Act & Assert
+        mockMvc.perform(get("/appointment/appointmentList/{status}", status))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("appointments"))
+                .andExpect(view().name("appointmentList"));
+
+        verify(appointmentsService).getAppointmentsForPacientByStatusPage(status, pacientId, 0, 5);
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "PACIENT"})
+    public void getAppointmentsByStatusAsSpecialist() throws Exception {
+        // Arrange
+        String status = "booked";
+        int userId = 1;
+        int specialistId = 1;
+        when(userService.getUserByEmail("specialist@example.com")).thenReturn(userId);
+        when(specialistService.getSpecialistByUserId(userId)).thenReturn(specialistId);
+
+        Page<AppointmentDTO> appointmentsPage = new PageImpl<>(java.util.List.of(
+                new AppointmentDTO(1, "patient@example.com", LocalDateTime.now(), "Checkup", "Dr. Smith", "booked", "Hospital", "Room 101")
+        ));
+        when(appointmentsService.getAppointmentsForDoctorByAppointmentStatus(status, specialistId, 0, 5)).thenReturn(appointmentsPage);
+
+        // Act & Assert
+        mockMvc.perform(get("/appointment/appointmentList/{status}", status))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("appointments"))
+                .andExpect(view().name("appointmentList"))
+                .andExpect(model().attribute("appointments", appointmentsPage));
+
+        verify(appointmentsService).getAppointmentsForDoctorByAppointmentStatus(status, specialistId, 0, 5);
+    }
+
+    @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "ADMIN"})
+    public void getAppointmentsForDoctorByStatus() throws Exception {
+        String status = "In_Asteptare"; // Specify a valid status
+        int specialistID = 1; // Specify a valid specialistID
+
+        // Setup pagination
+        int page = 0;
+        int size = 10;
+
+        // Create a PageImpl to mock the Page<AppointmentDTO>
+        Page<AppointmentDTO> appointmentsPage = new PageImpl<>(List.of(
+                new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "jj", "jjj")
+        ));
+
+        when(appointmentsService.getAppointmentsForDoctorByAppointmentStatus(status, specialistID, page, size))
+                .thenReturn(appointmentsPage);
+
+        mockMvc.perform(get("/appointment/getAppPD/{status}/{specialistID}", status, specialistID)
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1))); // Assuming you are returning a paged response
+
+        verify(appointmentsService).getAppointmentsForDoctorByAppointmentStatus(status, specialistID, page, size);
+    }
+
+    @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "ADMIN"})
     public void getPacientAppointmentsForSpecialist() throws Exception {
-        String emailPacient = "example@example.com"; // Specify a valid emailPacient
-        int doctorID = 1; // Specify a valid doctorID
+        String emailPacient = "example@example.com";
+        int doctorID = 1;
 
 
-        List<AppointmentDTO> pacientList = Arrays.asList(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "jj", "jjj"));
+        java.util.List<AppointmentDTO> pacientList = java.util.List.of(new AppointmentDTO(1, "O", LocalDateTime.now(), "ff", "jj", "jjj"));
         when(appointmentsService.getAppointmentsForPacientByStatus(emailPacient, doctorID)).thenReturn(pacientList);
         mockMvc.perform(get("/appointment/getAppS/{emailPacient}/{doctorID}", emailPacient, doctorID)
                         .contentType("application/json")
@@ -109,12 +194,14 @@ public class AppointmentControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={ "SPECIALIST", "PACIENT"})
     public void deleteAppointment() throws Exception {
-        int id = 1; // Specify a valid id for the appointment to delete
+        int id = 1;
 
 
         mockMvc.perform(patch("/appointment/delete/{id}", id)
                         .contentType("application/json")
+                        .with(csrf())
                         .content(String.valueOf(Long.parseLong(objectMapper.writeValueAsString(id)))))
                 .andExpect(status().isNoContent());
 
@@ -122,20 +209,6 @@ public class AppointmentControllerTest {
     }
 
 
-    @Test
-    public void getAppointments() throws Exception{
-        Appointment appointment = new Appointment(1,1,2,'online',new LocalDateTime(),'in asteptare');
-        Appointment appointment2 = new Appointment(2,3,2,'fizic',new LocalDateTime(),'respinsa');
 
-        List<Appointment> appointments = new ArrayList<>();
-        appointments.add(appointment);
-        appointments.add(appointment2);
-        when(appointmentsService.getAppointments()).thenReturn(appointments);
-
-        mockMvc.perform(get("/appointment"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("appointmentList"))
-                .andExpect(model().attribute("appointments",appointments));
-    }
 
 }

@@ -33,26 +33,33 @@ public class SecurityConfig {
                 .antMatchers("/", "/webjars/**", "/css/**", "/js/**","/doctors3.jpeg", "/images/**", "/images/*",  "/home",  "/register/patient", "/register/specialist", "/register/signUpP", "/register/signUpS", "/perform_login", "/pacient","appointment", "/appointment/form",  "/login", "/register").permitAll()
                 // URLs accessible to all authenticated users
                 .antMatchers("/pacient/**").hasAnyRole("PACIENT", "ADMIN")
-                .antMatchers("/journalPages/**").hasAnyRole("PACIENT", "ADMIN")
+                .antMatchers("/pacient//delete/*").hasAnyRole("PACIENT", "ADMIN")
+                .antMatchers("/journalPages/newpage").hasAnyRole("PACIENT", "ADMIN")
+                .antMatchers("/journalPages/getpages/*").hasAnyRole("PACIENT", "ADMIN")
+                .antMatchers("/journalPages/changestatus/**").hasAnyRole("PACIENT", "ADMIN")
                 .antMatchers("/appointment/form").hasAnyRole(  "PACIENT")
                 .antMatchers("/specialist").hasAnyRole( "PACIENT")
-                .antMatchers("/specialist/getSpecialistByName/**").hasAnyRole( "ADMIN", "PACIENT", "SPECIALIST")
-                .antMatchers("/specialist/getDoctorsList").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
-                .antMatchers("/specialist/getSpecialistByEmail/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
+                .antMatchers("/specialist/getSpecialistByName/**").hasAnyRole( "SPECIALIST", "ADMIN", "PACIENT")
                 .antMatchers("/appointment/getAppPS/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
+                .antMatchers("/specialist/getDoctorsList").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
+                .antMatchers("/specialist/getSpecialistByEmail/*").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
                 .antMatchers("/appointment/appointmentList/**").hasAnyRole("SPECIALIST",  "PACIENT")
                 .antMatchers("/appointment/appointmentList/*").hasAnyRole("SPECIALIST",  "PACIENT")
                 .antMatchers("/appointment/newApp").hasAnyRole( "ADMIN", "PACIENT")
                 .antMatchers("/appointment/add").hasAnyRole( "ADMIN", "PACIENT")
-
                 .antMatchers("/appointment/status-selection").hasAnyRole( "SPECIALIST", "PACIENT")
-
                 // URLs accessible only to specialists and admin
+                .antMatchers("/specialist/deleteS/*").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/journalPages/getpagesForSpecialist/*").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/specialist/**").hasAnyRole("SPECIALIST", "ADMIN")
-                .antMatchers("/pacient").hasAnyRole("SPECIALIST")
-                .antMatchers("/appointment/**").hasAnyRole("SPECIALIST", "ADMIN")
+                .antMatchers("/specialist/signUpS").hasAnyRole("SPECIALIST", "ADMIN")
+                .antMatchers("/pacient/getPacients").hasAnyRole("SPECIALIST")
+                .antMatchers("/appointment/getAppPD/**").hasAnyRole("SPECIALIST", "ADMIN")
+                .antMatchers("/appointment/getAppPS/**").hasAnyRole("SPECIALIST", "ADMIN")
+                .antMatchers("/appointment/delete/*").hasAnyRole("SPECIALIST",  "PACIENT")
                 .antMatchers("/reviews/**").hasAnyRole("SPECIALIST", "ADMIN", "PACIENT")
+                .antMatchers("/reviews/delete/*").hasAnyRole( "ADMIN", "PACIENT")
+                .antMatchers("/reviews/newReview").hasAnyRole("ADMIN", "PACIENT")
                 .antMatchers("/payment/**").hasAnyRole("SPECIALIST", "ADMIN")
                 .antMatchers("/location/**").hasAnyRole("SPECIALIST", "ADMIN")
                 // Any other URLs require authentication
@@ -61,8 +68,6 @@ public class SecurityConfig {
 
         http.userDetailsService(userDetailsService)
                 .headers((headers) -> headers.disable());
-//                .csrf(csrf -> csrf
-//                        .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")));
         http
                 .formLogin(formLogin ->
                 formLogin
@@ -72,12 +77,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/perform_login")
                         .permitAll()
         )
-                .exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"));;
-
-//        http.exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"));//                .httpBasic(Customizer.withDefaults())
-//        http .userDetailsService(userDetailsService)
-//             .csrf().disable(); // Disable CSRF protection for simplicity
-
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"));
         return http.build();
     }
 

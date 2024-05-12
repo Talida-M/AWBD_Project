@@ -64,6 +64,8 @@ public class Specialist {
     }
 
 
+
+
     // Getters and setters for the new fields
 
 

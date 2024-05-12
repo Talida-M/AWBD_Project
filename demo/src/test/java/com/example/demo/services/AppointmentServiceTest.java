@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -26,7 +27,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public abstract class AppointmentServiceTest {
+@ActiveProfiles("mysql")
+public  class AppointmentServiceTest {
     @InjectMocks
     private AppointmentsService appointmentsService;
 
@@ -42,8 +44,11 @@ public abstract class AppointmentServiceTest {
     void newAppointment_createsNewAppointment() {
         // Arrange
         NewAppointmentDTO newAppointmentDTO = new NewAppointmentDTO("patient@example.com", "specialist@example.com", "Checkup", LocalDateTime.now());
-        when(pacientsRepo.getPacientByEmail(newAppointmentDTO.getPacientEmail())).thenReturn(Optional.of(new Pacient()));
-        when(specialistRepo.getDoctorByEmail(newAppointmentDTO.getSpecialistEmail())).thenReturn(Optional.of(new Specialist()));
+        Pacient mockPacient = new Pacient();
+        Specialist mockSpecialist = new Specialist();
+
+        when(pacientsRepo.getPacientByEmail2(newAppointmentDTO.getPacientEmail())).thenReturn(mockPacient);
+        when(specialistRepo.getDoctorByEmail2(newAppointmentDTO.getSpecialistEmail())).thenReturn(mockSpecialist);
 
         // Act
         appointmentsService.newAppointment(newAppointmentDTO);
