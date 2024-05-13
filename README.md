@@ -11,6 +11,7 @@ Entity diagram:
 
 ![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/bbeab4f3-039a-444b-9e68-e1a2e04aecac)
 
+
 <details> 
  <summary>
   <b>
@@ -102,9 +103,12 @@ Forms data validation
  
 - The Model:
   
-The annotations like  @Min, @Positive will be validated when the object will be used in the same time with @Valid annotation in functions.
+The annotations like  @Min, @Positive, @Email will be validated when the object will be used in the same time with @Valid annotation in functions.
 
 <img width="552" alt="Screenshot 2024-05-13 at 10 12 37" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/2f0cee05-cae0-4978-9762-4117825c8754">
+
+<img width="499" alt="Screenshot 2024-05-13 at 10 49 21" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/22efe50c-668d-4872-9ec1-68a280d493c0">
+
 
 
 - Controller:
