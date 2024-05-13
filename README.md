@@ -121,6 +121,8 @@ We used BindingResult to detect errors in case the form was not filled out corre
 
   <img width="916" alt="Screenshot 2024-05-13 at 10 22 49" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/2be76d07-e457-4e66-8209-8548f8787019">
 
+  ![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/67ff5ad4-a701-4da3-b5d6-8f78fd9b89c6)
+
 
 </details>
 
@@ -152,6 +154,7 @@ We used logs especially in tests file.
 
 
 </details>
+
 
 <details> 
  <summary>
