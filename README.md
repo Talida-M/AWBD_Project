@@ -95,6 +95,34 @@ Unit Tests  for  REST endpoints and services
 <details> 
  <summary>
   <b>
+Forms data validation
+      
+  </b>
+ </summary>
+ 
+- The Model:
+  
+The annotations like  @Min, @Positive will be validated when the object will be used in the same time with @Valid annotation in functions.
+
+<img width="552" alt="Screenshot 2024-05-13 at 10 12 37" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/2f0cee05-cae0-4978-9762-4117825c8754">
+
+
+- Controller:
+  
+We used BindingResult to detect errors in case the form was not filled out correctly
+  
+<img width="891" alt="Screenshot 2024-05-13 at 10 23 13" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/142fce06-7507-4218-a4d9-eb53d096465c">
+
+- Frontend:
+
+  <img width="916" alt="Screenshot 2024-05-13 at 10 22 49" src="https://github.com/Talida-M/AWBD_Project/assets/141910803/2be76d07-e457-4e66-8209-8548f8787019">
+
+
+</details>
+
+<details> 
+ <summary>
+  <b>
  Exception custom pages
       
   </b>
