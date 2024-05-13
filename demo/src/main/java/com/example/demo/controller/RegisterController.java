@@ -51,7 +51,12 @@ public class RegisterController {
 
     // Endpoint to handle patient registration submission
     @PostMapping("/signUpP")
-    public ModelAndView createPacient(@Valid @ModelAttribute("patient") RegisterPacientDTO patient) {
+    public ModelAndView createPacient(@Valid @ModelAttribute("patient") RegisterPacientDTO patient,
+                                         BindingResult bindingResult,
+                                         Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("patient",patient);
+            return new ModelAndView("registerPatient");}
         pacientService.registerPacient(patient);
         return new ModelAndView( "redirect:/");
     }

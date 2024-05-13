@@ -2,11 +2,14 @@ package com.example.demo.dtos;
 
 import com.example.demo.entity.SocialCategory;
 
+import javax.validation.constraints.Email;
+
 public class RegisterPacientDTO {
     private String firstName = "";
 
     private String lastName = "";
 
+    @Email(message = "Please provide a valid email address")
     private String email;
 
     private String phoneNumber;

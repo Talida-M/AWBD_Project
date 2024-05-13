@@ -5,6 +5,7 @@ import com.example.demo.entity.Location;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class RegisterSpecialistDTO {
 
     private String lastName = "";
 
+    @Email(message = "Please provide a valid email address")
     private String email;
 
     private String phoneNumber;
