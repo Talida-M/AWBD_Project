@@ -5,6 +5,8 @@ import com.example.demo.entity.Location;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class RegisterSpecialistDTO {
 
     private String description;
 
+    @Min(value = 0,message = "Price should have minimum value zero")
+    @Positive(message = "Price should be greater than zero")
     private Double price;
 
     private String appointmentTime;

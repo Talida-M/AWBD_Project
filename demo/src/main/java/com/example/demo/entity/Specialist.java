@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +23,8 @@ public class Specialist {
     private String description;
 
     @Column(name = "price")
+    @Min(value = 0)
+    @Positive(message = "Price should be greater than zero")
     private Double price;
 
     @Column(name = "appointment_time")
