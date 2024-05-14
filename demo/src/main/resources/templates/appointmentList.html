@@ -52,6 +52,9 @@
             <th>Patient Email</th>
             <th>Doctor Name</th>
             <th>Doctor Email</th>
+            <th sec:authorize="hasRole('SPECIALIST')">Reject</th>
+            <th sec:authorize="hasRole('SPECIALIST')">Accept</th>
+            <th sec:authorize="hasRole('SPECIALIST')">Delete</th>
 
             <th></th>
         </tr>
@@ -66,6 +69,9 @@
             <td th:text="${appointment.pacientEmail}">example@yahoo.com</td>
             <td th:text="${appointment.specialistName}">114</td>
             <td th:text="${appointment.specialistEmail}">114</td>
+            <td sec:authorize="hasRole('SPECIALIST')"><a  href="#" th:href="@{'/appointment/update/Programare_Respinsa' + ${appointment.AppointmentId}}"><i class="fa-solid fa-times"></i></a></td>
+            <td sec:authorize="hasRole('SPECIALIST')"><a  href="#" th:href="@{'/appointment/update/Programare_Acceptata' + ${appointment.AppointmentId}}"><i class="fa-solid fa-check"></i></a></td>
+            <td sec:authorize="hasRole('SPECIALIST')"><a  href="#" th:href="@{'/appointment/delete/' + ${appointment.AppointmentId}}"><i class="fa-solid fa-trash"></i></a></td>
 
 
         </tr>

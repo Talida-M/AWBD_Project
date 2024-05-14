@@ -122,6 +122,14 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @RequestMapping("/delete/{id}")
+    public ModelAndView deleteAppointment(
+            @PathVariable int id
+    ){
+        appointmentsService.delete(id);
+        return new ModelAndView("redirect:/appointment");
+    }
+
     @Operation(summary = "Update  status appointment.", responses = {
             @ApiResponse(responseCode = "200", description = "status updated successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -133,6 +141,14 @@ public class AppointmentController {
             @PathVariable @Parameter(description = "ID", required = true) Integer id){
        appointmentsService.updateAppStatus(status, id);
         return ResponseEntity.ok().build();
+    }
+    @RequestMapping("/update/{status}/{id}")
+    public ModelAndView updateAppointment(
+            @PathVariable String status,
+            @PathVariable int id
+    ){
+        appointmentsService.updateAppStatus(status, id);
+        return new ModelAndView("redirect:/appointment");
     }
 
     @Operation(summary = "Get Appointments For Pacients By Status", responses = {
