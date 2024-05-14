@@ -127,7 +127,7 @@ public class AppointmentController {
             @PathVariable int id
     ){
         appointmentsService.delete(id);
-        return new ModelAndView("redirect:/appointment");
+        return new ModelAndView("redirect:/appointment/status-selection");
     }
 
     @Operation(summary = "Update  status appointment.", responses = {
@@ -148,7 +148,7 @@ public class AppointmentController {
             @PathVariable int id
     ){
         appointmentsService.updateAppStatus(status, id);
-        return new ModelAndView("redirect:/appointment");
+        return new ModelAndView("redirect:/appointment/status-selection");
     }
 
     @Operation(summary = "Get Appointments For Pacients By Status", responses = {
