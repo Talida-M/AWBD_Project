@@ -71,11 +71,12 @@ By adopting this method, we ensure that each set of tests runs under conditions 
 
 ![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/d479e9a4-545d-4f62-84e0-b8d3b226c90b)
 
-The tests for the services are made with H2 Profile.
-![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/f116903e-d629-4773-a357-a91f6ab4cf63)
+The tests for the repository  made with H2 Profile.
+![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/edc5deb3-b04e-481c-8506-fd68fa621433)
 
 
-The tests for Controllers are mada with MySQL Profile.
+
+The tests for Controllers and Services are made with MySQL Profile.
 ![image](https://github.com/Talida-M/AWBD_Project/assets/75331740/d49d7e5c-359f-40dc-a210-cf632a6a64a3)
 
 </details>
